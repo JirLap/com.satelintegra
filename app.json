@@ -1,3 +1,46 @@
 {
-  "_comment": "This file is generated. Please edit .homeycompose/app.json instead."
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+  "id": "com.satelintegra",
+  "version": "0.0.1",
+  "compatibility": ">=4.0.0",
+  "sdk": 2,
+  "name": {
+    "en": "Satel Integra Alarm"
+  },
+  "description": {
+    "en": "Satel Interga Alarmsystem integration"
+  },
+  "category": [
+    "security"
+  ],
+  "permissions": [],
+  "images": {
+    "large": "/assets/images/large.png",
+    "small": "/assets/images/small.png"
+  },
+  "author": {
+    "name": "Mickel Luiten",
+    "email": "mickelluiten@gmail.com"
+  },
+  "drivers": [
+    {
+      "id": "satelintegra",
+      "name": {
+        "en": "SatelIntegra"
+      },
+      "class": "homealarm",
+      "capabilities": [
+        "alarm_fire",
+        "alarm_generic",
+        "homealarm_state",
+        "alarm_motion",
+        "alarm_smoke",
+        "onoff"
+      ],
+      "images": {
+        "large": "/drivers/satelintegra/assets/images/large.png",
+        "small": "/drivers/satelintegra/assets/images/small.png"
+      }
+    }
+  ]
 }

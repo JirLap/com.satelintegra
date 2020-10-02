@@ -2,6 +2,8 @@
   "id": "com.satelintegra",
   "version": "0.0.1",
   "compatibility": ">=4.0.0",
+  "support": "mailto:mickelluiten@gmail.com",
+  "source": "https://github.com/mickelluiten/com.satelintegra",
   "sdk": 2,
   "name": {
     "en": "Satel Integra Alarm"
