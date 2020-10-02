@@ -1,13 +1,16 @@
+/* eslint-disable max-len */
+
 'use strict';
 
 const Homey = require('homey');
 
-class MyDriver extends Homey.Driver {
+class SatelIntegra extends Homey.Driver {
+
   /**
    * onInit is called when the driver is initialized.
    */
   async onInit() {
-    this.log('MyDriver has been initialized');
+    this.log('SatelIntegra has been initialized');
   }
 
   /**
@@ -28,6 +31,7 @@ class MyDriver extends Homey.Driver {
       // },
     ];
   }
+
 }
 
-module.exports = MyDriver;
+module.exports = SatelIntegra;
