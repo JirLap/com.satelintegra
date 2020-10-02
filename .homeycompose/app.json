@@ -1,0 +1,24 @@
+{
+  "id": "com.satelintegra",
+  "version": "0.0.1",
+  "compatibility": ">=4.0.0",
+  "sdk": 3,
+  "name": {
+    "en": "Satel Integra Alarm"
+  },
+  "description": {
+    "en": "Satel Interga Alarmsystem integration"
+  },
+  "category": [
+    "security"
+  ],
+  "permissions": [],
+  "images": {
+    "large": "/assets/images/large.png",
+    "small": "/assets/images/small.png"
+  },
+  "author": {
+    "name": "Mickel Luiten",
+    "email": "mickelluiten@gmail.com"
+  }
+}

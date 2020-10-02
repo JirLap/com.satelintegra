@@ -1,0 +1,1 @@
+Satel Interga Alarmsystem integration
