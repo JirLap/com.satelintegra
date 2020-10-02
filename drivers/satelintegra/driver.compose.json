@@ -1,0 +1,19 @@
+{
+  "id": "satelintegra",
+  "name": {
+    "en": "SatelIntegra"
+  },
+  "class": "homealarm",
+  "capabilities": [
+    "alarm_fire",
+    "alarm_generic",
+    "homealarm_state",
+    "alarm_motion",
+    "alarm_smoke",
+    "onoff"
+  ],
+  "images": {
+    "large": "/drivers/satelintegra/assets/images/large.png",
+    "small": "/drivers/satelintegra/assets/images/small.png"
+  }
+}

@@ -2,7 +2,7 @@
   "id": "com.satelintegra",
   "version": "0.0.1",
   "compatibility": ">=4.0.0",
-  "sdk": 3,
+  "sdk": 2,
   "name": {
     "en": "Satel Integra Alarm"
   },
