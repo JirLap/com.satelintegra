@@ -5,7 +5,6 @@
 
 const Homey = require('homey');
 const { ManagerSettings } = require('homey');
-const { ManagerDrivers } = require('homey');
 const functions = require('../../functions/functions');
 
 class integraAlarmDriver extends Homey.Driver {
@@ -15,6 +14,15 @@ class integraAlarmDriver extends Homey.Driver {
    */
   async onInit() {
     this.log('integraAlarmDriver has been initialized');
+    ManagerSettings.on('set', data => {
+      this.log('-------------------------------------------------------');
+      this.log('Setting are changed');
+      this.log(`IP Address:   ${ManagerSettings.get('alarmaddr')}`);
+      this.log(`Port: ${ManagerSettings.get('alarmport')}`);
+      this.log(`Usercode:  ${ManagerSettings.get('alarmcode')}`);
+      this.log(`Polling interval:  ${ManagerSettings.get('alarmpoll')} ms`);
+      this.log('-------------------------------------------------------');
+    });
   }
 
   /**

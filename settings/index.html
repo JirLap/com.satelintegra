@@ -33,7 +33,7 @@
                 <div class="field row">
                     <tr>
                         <th style="width:170px;"><label for="alarmport">Port</label></th>
-                        <td rowspan="2"><input id="alarmport" type="text" value="false" placeholder="7094" required /></td>
+                        <td rowspan="2"><input id="alarmport" type="text" value="7094" placeholder="7094" required /></td>
                     </tr>
                 </div>
          </table>
@@ -45,7 +45,7 @@
                 <div class="field row">
                     <tr>
                         <th style="width:170px;"><label for="alarmcode">Usercode</label></th>
-                        <td rowspan="2"><input id="alarmcode" type="text" value="false" placeholder="1" required /></td>
+                        <td rowspan="2"><input id="alarmcode" type="text" value="0000" placeholder="0000" required /></td>
                     </tr>
                 </div>
             </table>
@@ -58,7 +58,7 @@
                 <div class="field row">
                     <tr>
                         <th style="width:170px;"><label for="alarmpoll">Polling interval (ms)</label></th>
-                        <td rowspan="2"><input id="alarmpoll" type="text" placeholder="5000" required/></td>
+                        <td rowspan="2"><input id="alarmpoll" type="text" value="5000" placeholder="5000" required/></td>
                     </tr>
                 </div>
             </table>
@@ -74,32 +74,32 @@
 
              Homey.get('alarmaddr', function( err, alarmaddr ) {
                if( err ) return Homey.alert( err );
-               alarmaddr.value = alarmaddr;
+               alarmaddrSetElement.value = alarmaddr;
               });
 
             Homey.get('alarmport', function( err, alarmport ) {
                if( err ) return Homey.alert( err );
-               alarmport.value = alarmport;
+               alarmportSetElement.value = alarmport;
               });
 
             Homey.get('alarmcode', function( err, alarmcode ) {
                if( err ) return Homey.alert( err );
-               alarmcode.value = alarmcode;
+               alarmcodeSetElement.value = alarmcode;
             });
 
             Homey.get('alarmpoll', function( err, alarmpoll ) {
                if( err ) return Homey.alert( err );
-               alarmpoll.value = alarmpoll;
+               alarmpollSetElement.value = alarmpoll;
             });
 
 
             // Tell Homey we're ready to be displayed
             Homey.ready();
 
-            var alarmaddr = document.getElementById('alarmaddr');
-            var alarmport = document.getElementById('alarmport');
-            var alarmcode = document.getElementById('alarmcode');
-            var alarmpoll = document.getElementById('alarmpoll');
+            var alarmaddrSetElement = document.getElementById('alarmaddr');
+            var alarmportSetElement = document.getElementById('alarmport');
+            var alarmcodeSetElement = document.getElementById('alarmcode');
+            var alarmpollSetElement = document.getElementById('alarmpoll');
             var saveElement = document.getElementById('save');
 
             saveElement.addEventListener('click', function(e) {
@@ -107,27 +107,27 @@
 
              // create Regular Expression that validates for IPv4 addresses, then do the actual test on the input.
            var Ipv4RegEx = new RegExp('^(([01]?\\d\\d?|2[0-4]\\d|25[0-5]).){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$');
-           var IPInputOK = Ipv4RegEx.test(alarmaddr.value);
+           var IPInputOK = Ipv4RegEx.test(alarmaddrSetElement.value);
                 if (IPInputOK) {
-                    Homey.set('alarmaddr', alarmaddr.value);
+                    Homey.set('alarmaddr', alarmaddrSetElement.value);
                  } else {
                     Homey.alert('No (valid) IP address');
                  }
 
-                if (Number(alarmport.value) >= 1 && Number(alarmport.value) <= 65535 ){
-                    Homey.set('alarmport', alarmport.value);
+                if (Number(alarmportSetElement.value) >= 1 && Number(alarmportSetElement.value) <= 65535 ){
+                    Homey.set('alarmport', alarmportSetElement.value);
                 } else {
                     Homey.alert('Portsetting is out of range');
                 }
            
-                if (Number(alarmcode.value) >=1 && Number(alarmcode.value) <= 999999) {
-                    Homey.set('alarmcode', alarmcode.value);
+                if (Number(alarmcodeSetElement.value) >=0 && Number(alarmcodeSetElement.value) <= 999999) {
+                    Homey.set('alarmcode', alarmcodeSetElement.value);
                  } else {
                     Homey.alert('Not a valid usercode');
                  }
 
-                if (Number(alarmpoll.value) >=1 && Number(alarmpoll.value) <= 9999) {
-                    Homey.set('alarmpoll', alarmpoll.value);
+                if (Number(alarmpollSetElement.value) >=1 && Number(alarmpollSetElement.value) <= 9999) {
+                    Homey.set('alarmpoll', alarmpollSetElement.value);
                  } else {
                     Homey.alert('Out of range');
                  }

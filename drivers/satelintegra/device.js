@@ -4,7 +4,6 @@
 
 const Homey = require('homey');
 const { ManagerSettings } = require('homey');
-const { ManagerDrivers } = require('homey');
 const functions = require('../../functions/functions');
 
 class integraAlarmDevice extends Homey.Device {
