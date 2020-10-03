@@ -13,7 +13,9 @@ class integraAlarmDriver extends Homey.Driver {
    * onInit is called when the driver is initialized.
    */
   async onInit() {
+    this.log('-------------------------------------------------------');
     this.log('integraAlarmDriver has been initialized');
+    this.log('-------------------------------------------------------');
     ManagerSettings.on('set', data => {
       this.log('-------------------------------------------------------');
       this.log('Setting are changed');

@@ -9,8 +9,8 @@ class integraAlarm extends Homey.App {
    * onInit is called when the app is initialized.
    */
   async onInit() {
-    this.log(`${this.id} running...`);
     this.log('-------------------------------------------------------');
+    this.log(`${this.id} running...`);
     this.log(`IP Address:   ${ManagerSettings.get('alarmaddr')}`);
     this.log(`Port: ${ManagerSettings.get('alarmport')}`);
     this.log(`Usercode:  ${ManagerSettings.get('alarmcode')}`);

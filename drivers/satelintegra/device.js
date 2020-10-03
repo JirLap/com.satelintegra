@@ -12,6 +12,7 @@ class integraAlarmDevice extends Homey.Device {
    * onInit is called when the device is initialized.
    */
   async onInit() {
+    this.log('-------------------------------------------------------');
     this.log('Initialize device');
     this.log(' * Name:', this.getName());
     this.log(' * Driver:', this.getDriver().id);
@@ -20,6 +21,7 @@ class integraAlarmDevice extends Homey.Device {
     this.log(' * Capabilities:', this.getCapabilities());
     this.log(' * State:', this.getState());
     this.log(' * Settings: ', this.getSettings());
+    this.log('-------------------------------------------------------');
   }
 
   /**
