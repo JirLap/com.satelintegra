@@ -8,6 +8,9 @@
   "name": {
     "en": "Satel Integra Alarm"
   },
+  "dependencies": {
+    "net": "*"
+  },
   "description": {
     "en": "Satel Interga Alarmsystem integration"
   },

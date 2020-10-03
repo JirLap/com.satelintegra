@@ -3,6 +3,7 @@
 'use strict';
 
 const Homey = require('homey');
+const functions = require('../../functions/functions');
 
 class SatelIntegra extends Homey.Driver {
 
