@@ -1,17 +1,20 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 
 'use strict';
 
 const Homey = require('homey');
+const { ManagerSettings } = require('homey');
+const { ManagerDrivers } = require('homey');
 const functions = require('../../functions/functions');
 
-class SatelIntegra extends Homey.Driver {
+class integraAlarmDriver extends Homey.Driver {
 
   /**
    * onInit is called when the driver is initialized.
    */
   async onInit() {
-    this.log('SatelIntegra has been initialized');
+    this.log('integraAlarmDriver has been initialized');
   }
 
   /**
@@ -35,4 +38,4 @@ class SatelIntegra extends Homey.Driver {
 
 }
 
-module.exports = SatelIntegra;
+module.exports = integraAlarmDriver;

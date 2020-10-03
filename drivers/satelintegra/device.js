@@ -1,15 +1,26 @@
+/* eslint-disable no-unused-vars */
+
 'use strict';
 
 const Homey = require('homey');
+const { ManagerSettings } = require('homey');
+const { ManagerDrivers } = require('homey');
 const functions = require('../../functions/functions');
 
-class MyDevice extends Homey.Device {
+class integraAlarmDevice extends Homey.Device {
 
   /**
    * onInit is called when the device is initialized.
    */
   async onInit() {
-    this.log('MyDevice has been initialized');
+    this.log('Initialize device');
+    this.log(' * Name:', this.getName());
+    this.log(' * Driver:', this.getDriver().id);
+    this.log(' * Class:', this.getClass());
+    this.log(' * Available: ', this.getAvailable());
+    this.log(' * Capabilities:', this.getCapabilities());
+    this.log(' * State:', this.getState());
+    this.log(' * Settings: ', this.getSettings());
   }
 
   /**
@@ -49,4 +60,4 @@ class MyDevice extends Homey.Device {
 
 }
 
-module.exports = MyDevice;
+module.exports = integraAlarmDevice;
