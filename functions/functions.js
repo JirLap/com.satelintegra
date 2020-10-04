@@ -110,6 +110,16 @@ function partitionListToByteArray(partitions, size = 4) {
   return partHexList;
 } // partitionListToByteArray
 
+function createFrameArray(cmd) {
+  // cmd must be array
+  // Frame structure
+  // [ 0xFE | 0xFE | cmd | d1 | d2 | ... | dn | crc.high | crc.low | 0xFE | 0x0D ]
+  const frmHdr = ['FE', 'FE'];
+  const frmFtr = ['FE', '0D'];
+  const crc = this.calcCRC(cmd);
+  return frmHdr.concat(cmd).concat(crc).concat(frmFtr);
+} // createFrameArray
+
 module.exports = {
-  dec2hex, hex2dec, hex2bin, byteArrayToDec, stringToHexBytes, compareArrays, calcCRC, ETHM1AnswerToArray, partitionListToByteArray, verifyAnswer,
+  dec2hex, hex2dec, hex2bin, byteArrayToDec, stringToHexBytes, compareArrays, calcCRC, ETHM1AnswerToArray, partitionListToByteArray, verifyAnswer, createFrameArray,
 };
