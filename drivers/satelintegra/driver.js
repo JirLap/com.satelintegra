@@ -35,7 +35,7 @@ class integraAlarmDriver extends Homey.Driver {
     });
   }
 
-  // create and open the socket
+  // create the socket
   socketConnection(input, callback) {
     satelSocket = new net.Socket();
     satelSocket.setEncoding('binary');
@@ -51,6 +51,8 @@ class integraAlarmDriver extends Homey.Driver {
     satelSocket.on('timeout', () => {
       this.log('Connection timed out.');
       satelSocket.destroy();
+      satelSocket.end();
+      return [];
     });
 
     // socket close
@@ -60,6 +62,8 @@ class integraAlarmDriver extends Homey.Driver {
 
     satelSocket.on('error', err => {
       this.log(`Error:${err}`);
+      satelSocket.destroy();
+      return [];
     });
 
     satelSocket.on('data', data => {
@@ -78,6 +82,7 @@ class integraAlarmDriver extends Homey.Driver {
       if (debugEnabled) {
         this.log(`   - payload: ${payload}`);
       }
+      satelSocket.destroy();
       // call the callback function with the payload as parameter
       callback(payload);
     });
@@ -182,15 +187,16 @@ class integraAlarmDriver extends Homey.Driver {
           // send command for zones and outputs
           this.log('Reading zones and outputs');
           // let totalZonesCount = 1;
-          // while (totalZonesCount <= 9) {
-          this.socketConnection(functions.createFrameArray(['EE', '01', '01']), zones => {
-            // this.socketConnection(functions.createFrameArray(['EE', '01', `0${functions.dec2hex(Number(totalZonesCount))}`]), zones => {
-            this.parsePayloadZones(zones);
-          });
-          // totalZonesCount++;
-          // }
 
-          satelSocketConnected = false;
+          for (let totalZonesCount = 1; totalZonesCount <= 9; totalZonesCount++) {
+            setTimeout(() => {
+              this.socketConnection(functions.createFrameArray(['EE', '01', '01']), zones => {
+                this.parsePayloadZones(zones);
+              }, 5000);
+            });
+          }
+
+          // this.socketConnection(functions.createFrameArray(['EE', '01', `${functions.dec2hex(Number(totalZonesCount))}`]), zones => {
 
           // create the devices data property.
           const devices = [{
