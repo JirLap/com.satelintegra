@@ -8,7 +8,7 @@ const net = require('net');
 const { ManagerSettings } = require('homey');
 const functions = require('../../functions/functions');
 
-const debugEnabled = true;
+const debugEnabled = false;
 
 let satelSocket = {};
 let satelSocketConnected = false;
@@ -39,17 +39,22 @@ class integraAlarmDriver extends Homey.Driver {
   socketConnection(input, callback) {
     satelSocket = new net.Socket();
     satelSocket.setEncoding('binary');
-    satelSocket.setTimeout(750);
+    satelSocket.setTimeout(1000);
 
     satelSocket.connect(Number(ManagerSettings.get('alarmport')), ManagerSettings.get('alarmaddr'), () => {
       this.log(`Connected with alarmsystem on IP: ${ManagerSettings.get('alarmaddr')}`);
       satelSocketConnected = true;
+      if (debugEnabled) {
+        this.log(` * Send command: ${input.join('').match(/.{2}/g)}`);
+      }
       satelSocket.write(Buffer.from(input.join(''), 'hex'));
     });
 
     // socket timeout
     satelSocket.on('timeout', () => {
-      this.log('Connection timed out.');
+      if (debugEnabled) {
+        this.log('Connection timed out.');
+      }
       satelSocket.destroy();
       satelSocket.end();
       return [];
@@ -57,16 +62,21 @@ class integraAlarmDriver extends Homey.Driver {
 
     // socket close
     satelSocket.on('close', () => {
-      this.log(`Connection closed to IP: ${ManagerSettings.get('alarmaddr')}`);
+      if (debugEnabled) {
+        this.log(`Connection closed to IP: ${ManagerSettings.get('alarmaddr')}`);
+      }
     });
 
+    // socket error
     satelSocket.on('error', err => {
-      this.log(`Error:${err}`);
+      if (debugEnabled) {
+        this.log(`Error:${err}`);
+      }
       satelSocket.destroy();
       return [];
     });
 
-    satelSocket.on('data', data => {
+    satelSocket.on('data', async data => {
       if (debugEnabled) {
         this.log(' * Received data from alarm...');
       }
@@ -154,7 +164,7 @@ class integraAlarmDriver extends Homey.Driver {
         break;
       default: this.log('UNKNOWN Alarm type');
     }
-    return null;
+    return payload;
   } // parsePayloadSystemType
 
   parsePayloadZones(payload) {
@@ -164,12 +174,22 @@ class integraAlarmDriver extends Homey.Driver {
 
     const cmd = payload[0];
     const answer = payload.slice(1);
-    if (debugEnabled) {
-      this.log(`   - command: ${cmd}`);
-      this.log(`   - answer : ${answer}`);
+    const zoneNumber = payload.slice(2, 3);
+    const zoneFunction = payload.slice(3, 4);
+    const zoneName = payload.slice(4, 20);
+    if (cmd === 'EF') {
+      this.log('   - ZONE NOT USED');
+    } else {
+      if (debugEnabled) {
+        this.log(`   - command: ${cmd}`);
+        this.log(`   - answer : ${answer}`);
+      }
+      this.log(`   - Zonenumber : ${functions.hex2dec(zoneNumber)}`);
+      this.log(`   - Zonename   : ${functions.hex2a(zoneName)}`);
+      this.log(`   - Zonefunction   : ${functions.hex2dec(zoneFunction)}`);
     }
-    return null;
-  } // parsePayloadZones
+    return payload;
+  } // parsePayloadZones console.log(buf.toString('hex'));
 
   onPair(socket) {
     // send command for system type
@@ -185,18 +205,15 @@ class integraAlarmDriver extends Homey.Driver {
           });
         } else if (satelSocketConnected) {
           // send command for zones and outputs
-          this.log('Reading zones and outputs');
-          // let totalZonesCount = 1;
-
-          for (let totalZonesCount = 1; totalZonesCount <= 9; totalZonesCount++) {
+          this.log('Reading zones');
+          for (let totalZonesCount = 1; totalZonesCount <= totalZones; totalZonesCount++) {
             setTimeout(() => {
-              this.socketConnection(functions.createFrameArray(['EE', '01', '01']), zones => {
+              this.log(`Reading zonenumber : ${totalZonesCount}`);
+              this.socketConnection(functions.createFrameArray(['EE', '01', `${functions.dec2hex2Digit(totalZonesCount)}`]), zones => {
                 this.parsePayloadZones(zones);
-              }, 5000);
-            });
+              });
+            }, totalZonesCount * 950);
           }
-
-          // this.socketConnection(functions.createFrameArray(['EE', '01', `${functions.dec2hex(Number(totalZonesCount))}`]), zones => {
 
           // create the devices data property.
           const devices = [{

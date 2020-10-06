@@ -4,10 +4,22 @@
 
 'use strict';
 
+function hex2a(data) {
+  const hex = data.toString().replace(/,/g, '');// force conversion and remove comma's
+  let str = '';
+  for (let i = 0; (i < hex.length && hex.substr(i, 2) !== '00'); i += 2) str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+  return str;
+}
+
 // decimal to hex conversion
-function dec2hex(i) {
+function dec2hex4Digit(i) {
   return (i + 0x10000).toString(16).substr(-4).toUpperCase();
-} // dec2hex
+} // dec2hex4Digit
+
+// decimal to hex conversion
+function dec2hex2Digit(i) {
+  return (i + 0x10000).toString(16).substr(-2).toUpperCase();
+} // dec2hex2Digit
 
 function hex2dec(i) {
   return parseInt(i, 16);
@@ -70,7 +82,7 @@ function calcCRC(array) {
     // crc + crc.high + b
     crc = (crc + (crc >> 8) + parseInt(b, 16)) & 0xFFFF;
   }
-  return dec2hex(crc).match(/.{2}/g); // return array
+  return dec2hex4Digit(crc).match(/.{2}/g); // return array
 } // calcCRC
 
 function ETHM1AnswerToArray(answer) {
@@ -121,5 +133,5 @@ function createFrameArray(cmd) {
 } // createFrameArray
 
 module.exports = {
-  dec2hex, hex2dec, hex2bin, byteArrayToDec, stringToHexBytes, compareArrays, calcCRC, ETHM1AnswerToArray, partitionListToByteArray, verifyAnswer, createFrameArray,
+  hex2a, dec2hex4Digit, dec2hex2Digit, hex2dec, hex2bin, byteArrayToDec, stringToHexBytes, compareArrays, calcCRC, ETHM1AnswerToArray, partitionListToByteArray, verifyAnswer, createFrameArray,
 };
