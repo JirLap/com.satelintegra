@@ -11,9 +11,11 @@ const functions = require('../../functions/functions');
 const debugEnabled = false;
 
 let satelSocket = {};
-let satelSocketConnected = false;
+const devices = [];
 let totalZones = 0;
 let totalOutputs = 0;
+let totalPartitions = 0;
+let alarmidentified = false;
 
 class integraAlarmDriver extends Homey.Driver {
 
@@ -42,9 +44,8 @@ class integraAlarmDriver extends Homey.Driver {
     satelSocket.setTimeout(1000);
 
     satelSocket.connect(Number(ManagerSettings.get('alarmport')), ManagerSettings.get('alarmaddr'), () => {
-      this.log(`Connected with alarmsystem on IP: ${ManagerSettings.get('alarmaddr')}`);
-      satelSocketConnected = true;
       if (debugEnabled) {
+        this.log(`Connected with alarmsystem on IP: ${ManagerSettings.get('alarmaddr')}`);
         this.log(` * Send command: ${input.join('').match(/.{2}/g)}`);
       }
       satelSocket.write(Buffer.from(input.join(''), 'hex'));
@@ -102,7 +103,6 @@ class integraAlarmDriver extends Homey.Driver {
     if (!Array.isArray(payload)) {
       return '';
     }
-
     const cmd = payload[0];
     const answer = payload.slice(1);
     if (debugEnabled) {
@@ -118,46 +118,64 @@ class integraAlarmDriver extends Homey.Driver {
             this.log('type = Integra 24');
             totalZones = 24;
             totalOutputs = 20;
+            totalPartitions = 4;
+            alarmidentified = true;
             break;
           case 1:
             this.log('type = Integra 32');
             totalZones = 32;
             totalOutputs = 32;
+            totalPartitions = 16;
+            alarmidentified = true;
             break;
           case 2:
             this.log('type = Integra 64');
             totalZones = 64;
             totalOutputs = 64;
+            totalPartitions = 32;
+            alarmidentified = true;
             break;
           case 3:
             this.log('type = Integra 128');
             totalZones = 128;
             totalOutputs = 128;
+            totalPartitions = 32;
+            alarmidentified = true;
             break;
           case 4:
             this.log('type = Integra 128-WRL SIM300');
             totalZones = 128;
             totalOutputs = 128;
+            totalPartitions = 32;
+            alarmidentified = true;
             break;
           case 66:
             this.log('type = Integra 64 PLUS');
             totalZones = 64;
             totalOutputs = 64;
+            totalPartitions = 32;
+            alarmidentified = true;
             break;
           case 67:
             this.log('type = Integra 128 PLUS');
             totalZones = 128;
             totalOutputs = 128;
+            totalPartitions = 32;
+            alarmidentified = true;
             break;
           case 72:
             this.log('type = Integra 256 PLUS');
             totalZones = 256;
             totalOutputs = 256;
+            totalPartitions = 32;
+            alarmidentified = true;
             break;
           case 132:
             this.log('type = Integra 128-WRL LEON');
             totalZones = 128;
             totalOutputs = 128;
+            totalPartitions = 32;
+            alarmidentified = true;
             break;
           default: this.log('UNKNOWN Alarm type');
         }
@@ -167,11 +185,75 @@ class integraAlarmDriver extends Homey.Driver {
     return payload;
   } // parsePayloadSystemType
 
-  parsePayloadZones(payload) {
+  // parsePayloadPartitions
+  parsePayloadPartition(payload) {
     if (!Array.isArray(payload)) {
       return '';
     }
 
+    const cmd = payload[0];
+    const answer = payload.slice(1);
+    const partitionNumber = payload.slice(2, 3);
+    const partitionName = payload.slice(4, 20);
+    if (cmd === 'EF') {
+      this.log('   - PARTITION NOT USED');
+    } else {
+      if (debugEnabled) {
+        this.log(`   - command: ${cmd}`);
+        this.log(`   - answer : ${answer}`);
+      }
+      this.log(`   - Partitionnumber : ${functions.hex2dec(partitionNumber)}`);
+      this.log(`   - Partitionname   : ${functions.hex2a(partitionName)}`);
+      const device = [{
+        name: 'tesy',
+        // name: `${functions.hex2a(partitionName)}`,
+        data: {
+          id: `P${functions.hex2dec(partitionNumber)}`,
+        },
+        capabilities: ['onoff'],
+      },
+      ];
+      devices.push(device);
+    }
+    return payload;
+  } // parsePayloadPartitions
+
+  parsePayloadOutput(payload) {
+    if (!Array.isArray(payload)) {
+      return '';
+    }
+    const cmd = payload[0];
+    const answer = payload.slice(1);
+    const outputNumber = payload.slice(2, 3);
+    const outputFunction = payload.slice(3, 4);
+    const outputName = payload.slice(4, 20);
+    if (outputFunction == '00') {
+      this.log('   - OUTPUT NOT USED');
+    } else {
+      if (debugEnabled) {
+        this.log(`   - command: ${cmd}`);
+        this.log(`   - answer : ${answer}`);
+      }
+      this.log(`   - Outputnumber   : ${functions.hex2dec(outputNumber)}`);
+      this.log(`   - Outputsname    : ${functions.hex2a(outputName)}`);
+      this.log(`   - Outputfunction : ${functions.hex2dec(outputFunction)}`);
+      const device = [{
+        name: `${functions.hex2a(outputName)}`,
+        data: {
+          id: `O${functions.hex2dec(outputNumber)}`,
+        },
+        capabilities: ['onoff'],
+      },
+      ];
+      devices.push(device);
+    }
+    return payload;
+  } // parsePayloadPartitions
+
+  parsePayloadZones(payload) {
+    if (!Array.isArray(payload)) {
+      return '';
+    }
     const cmd = payload[0];
     const answer = payload.slice(1);
     const zoneNumber = payload.slice(2, 3);
@@ -184,14 +266,14 @@ class integraAlarmDriver extends Homey.Driver {
         this.log(`   - command: ${cmd}`);
         this.log(`   - answer : ${answer}`);
       }
-      this.log(`   - Zonenumber : ${functions.hex2dec(zoneNumber)}`);
-      this.log(`   - Zonename   : ${functions.hex2a(zoneName)}`);
+      this.log(`   - Zonenumber     : ${functions.hex2dec(zoneNumber)}`);
+      this.log(`   - Zonename       : ${functions.hex2a(zoneName)}`);
       this.log(`   - Zonefunction   : ${functions.hex2dec(zoneFunction)}`);
     }
     return payload;
-  } // parsePayloadZones console.log(buf.toString('hex'));
+  } // parsePayloadZones
 
-  onPair(socket) {
+  async onPair(socket) {
     // send command for system type
     this.log('Reading systemtype');
     this.socketConnection(functions.createFrameArray(['7E']), systemType => {
@@ -199,37 +281,28 @@ class integraAlarmDriver extends Homey.Driver {
     });
     socket.on('showView', (viewId, callbackShow) => {
       callbackShow();
-      if (viewId === 'start') {
-        if (ManagerSettings.get('alarmaddr') === '0.0.0.0' || ManagerSettings.get('alarmaddr') === '127.0.0.1') {
-          socket.emit('errors', 'Default or NO IP address, go to general settings to change.', (err, data) => {
+      if (viewId === 'startpartition') {
+        if (!alarmidentified) {
+          socket.emit('errors', 'Alarmpanel type not found. Check IP, Port or alarmpanel settings', (err, data) => {
           });
-        } else if (satelSocketConnected) {
-          // send command for zones and outputs
-          this.log('Reading zones');
-          for (let totalZonesCount = 1; totalZonesCount <= totalZones; totalZonesCount++) {
+        } else if (alarmidentified) {
+          // send command for partitions
+          this.log('Reading partitions');
+          for (let totalPartitionsCount = 1; totalPartitionsCount <= totalPartitions; totalPartitionsCount++) {
             setTimeout(() => {
-              this.log(`Reading zonenumber : ${totalZonesCount}`);
-              this.socketConnection(functions.createFrameArray(['EE', '01', `${functions.dec2hex2Digit(totalZonesCount)}`]), zones => {
-                this.parsePayloadZones(zones);
+              this.log(`Reading partitionnumber : ${totalPartitionsCount}`);
+              this.socketConnection(functions.createFrameArray(['EE', '00', `${functions.dec2hex2Digit(totalPartitionsCount)}`]), partitions => {
+                this.parsePayloadPartition(partitions);
               });
-            }, totalZonesCount * 950);
+            }, totalPartitionsCount * 950);
+            //
           }
-
-          // create the devices data property.
-          const devices = [{
-            name: 'Main Zone',
-            data: {
-              id: 'main',
-            },
-          },
-          ];
-
           socket.emit('continue', null);
           socket.on('list_devices', (data, callback) => {
             callback(null, devices);
           });
         } else {
-          socket.emit('errors', 'No response from alarmsystem, check IP or port', (err, data) => {
+          socket.emit('errors', 'Something went wrong. Try again.', (err, data) => {
           });
         }
       }
@@ -239,3 +312,26 @@ class integraAlarmDriver extends Homey.Driver {
 }
 
 module.exports = integraAlarmDriver;
+/*
+ // send command for zones
+ this.log('Reading zones');
+ for (let totalZonesCount = 1; totalZonesCount <= totalZones; totalZonesCount++) {
+   setTimeout(() => {
+     this.log(`Reading zonenumber : ${totalZonesCount}`);
+     this.socketConnection(functions.createFrameArray(['EE', '01', `${functions.dec2hex2Digit(totalZonesCount)}`]), zones => {
+       this.parsePayloadZones(zones);
+     });
+   }, totalZonesCount * 950);
+ }
+
+ // send command for outputs
+ this.log('Reading outputs');
+ for (let totalOutputsCount = 1; totalOutputsCount <= totalOutputs; totalOutputsCount++) {
+   setTimeout(() => {
+     this.log(`Reading outputnumber : ${totalOutputsCount}`);
+     this.socketConnection(functions.createFrameArray(['EE', '04', `${functions.dec2hex2Digit(totalOutputsCount)}`]), outputs => {
+       this.parsePayloadOutput(outputs);
+     });
+   }, totalOutputsCount * 950);
+ }
+ */

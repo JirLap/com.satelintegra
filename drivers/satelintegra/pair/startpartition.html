@@ -1,5 +1,7 @@
 <script>
 
+    Homey.setTitle(Homey.__('Partitions'));
+
     Homey.on('errors', function(message, callback){
     Homey.alert(message); 
     callback(null, 'ERROR');

@@ -18,7 +18,7 @@
   },
   "pair": [
     {
-      "id": "start"
+      "id": "startpartition"
     },
     {
       "id": "list_devices",
