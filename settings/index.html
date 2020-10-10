@@ -50,20 +50,7 @@
                 </div>
             </table>
         </fieldset>
-
-       
-        <fieldset>
-            <p>Alarm polling interval in m/s. Default is 5000ms</p>
-            <table>
-                <div class="field row">
-                    <tr>
-                        <th style="width:170px;"><label for="alarmpoll">Polling interval (ms)</label></th>
-                        <td rowspan="2"><input id="alarmpoll" type="text" value="5000" placeholder="5000" required/></td>
-                    </tr>
-                </div>
-            </table>
-        </fieldset>
-        
+      
       
         <button id="save" class="right">Save changes</button>
 
@@ -87,11 +74,6 @@
                alarmcodeSetElement.value = alarmcode;
             });
 
-            Homey.get('alarmpoll', function( err, alarmpoll ) {
-               if( err ) return Homey.alert( err );
-               alarmpollSetElement.value = alarmpoll;
-            });
-
 
             // Tell Homey we're ready to be displayed
             Homey.ready();
@@ -99,7 +81,6 @@
             var alarmaddrSetElement = document.getElementById('alarmaddr');
             var alarmportSetElement = document.getElementById('alarmport');
             var alarmcodeSetElement = document.getElementById('alarmcode');
-            var alarmpollSetElement = document.getElementById('alarmpoll');
             var saveElement = document.getElementById('save');
 
             saveElement.addEventListener('click', function(e) {
@@ -125,13 +106,7 @@
                  } else {
                     Homey.alert('Not a valid usercode');
                  }
-
-                if (Number(alarmpollSetElement.value) >=1 && Number(alarmpollSetElement.value) <= 9999) {
-                    Homey.set('alarmpoll', alarmpollSetElement.value);
-                 } else {
-                    Homey.alert('Out of range');
-                 }
-               
+              
                 document.getElementById('save').innerHTML = "Settings saved";
 
             });

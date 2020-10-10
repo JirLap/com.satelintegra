@@ -11,10 +11,9 @@ class integraAlarm extends Homey.App {
   async onInit() {
     this.log('-------------------------------------------------------');
     this.log(`${this.id} running...`);
-    this.log(`IP Address:   ${ManagerSettings.get('alarmaddr')}`);
-    this.log(`Port: ${ManagerSettings.get('alarmport')}`);
-    this.log(`Usercode:  ${ManagerSettings.get('alarmcode')}`);
-    this.log(`Polling interval:  ${ManagerSettings.get('alarmpoll')} ms`);
+    this.log(`      IP Address:  ${ManagerSettings.get('alarmaddr')}`);
+    this.log(`            Port:  ${ManagerSettings.get('alarmport')}`);
+    this.log(`        Usercode:  ${ManagerSettings.get('alarmcode')}`);
     this.log('-------------------------------------------------------');
   }
 
