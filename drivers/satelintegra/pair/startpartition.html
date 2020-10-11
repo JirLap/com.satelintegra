@@ -1,6 +1,6 @@
 <script>
 
-    Homey.setTitle(Homey.__('Select Partitions to add.'));
+    Homey.setTitle(Homey.__('Add Partitions.'));
 
     Homey.on('errors', function(message, callback){
     Homey.alert(message); 
@@ -8,8 +8,9 @@
     Homey.done();
     });    
     
-    Homey.on('continue', function (success, callback) {
+    // Homey.on('continue', function (success, callback) {
+        // Homey.confirm( 'TEST', 'info' )
         Homey.showView('list_devices');
-    });
+    //});
 
 </script>

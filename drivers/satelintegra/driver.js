@@ -175,7 +175,7 @@ class integraAlarmDriver extends Homey.Driver {
       data: {
         id: `P${functions.hex2dec(payload[2])}`,
       },
-      capabilities: ['onoff'],
+      capabilities: ['onoff', 'alarm_generic'],
       icon: '/house.svg',
     };
     devices.push(device);
@@ -186,29 +186,23 @@ class integraAlarmDriver extends Homey.Driver {
     if (!Array.isArray(payload)) {
       return '';
     }
-    const cmd = payload[0];
-    const answer = payload.slice(1);
     const outputNumber = payload.slice(2, 3);
     const outputFunction = payload.slice(3, 4);
     const outputName = payload.slice(4, 20);
     if (outputFunction == '00') {
       this.log('   - OUTPUT NOT USED');
     } else {
-      if (debugEnabled) {
-        this.log(`   - command: ${cmd}`);
-        this.log(`   - answer : ${answer}`);
-      }
       this.log(`   - Outputnumber   : ${functions.hex2dec(outputNumber)}`);
       this.log(`   - Outputsname    : ${functions.hex2a(outputName)}`);
       this.log(`   - Outputfunction : ${functions.hex2dec(outputFunction)}`);
-      const device = [{
+      const device = {
         name: `${functions.hex2a(outputName)}`,
         data: {
           id: `O${functions.hex2dec(outputNumber)}`,
         },
         capabilities: ['onoff'],
-      },
-      ];
+        icon: '/alarm.svg',
+      };
       devices.push(device);
     }
     return payload;
@@ -219,17 +213,12 @@ class integraAlarmDriver extends Homey.Driver {
       return '';
     }
     const cmd = payload[0];
-    const answer = payload.slice(1);
     const zoneNumber = payload.slice(2, 3);
     const zoneFunction = payload.slice(3, 4);
     const zoneName = payload.slice(4, 20);
     if (cmd === 'EF') {
       this.log('   - ZONE NOT USED');
     } else {
-      if (debugEnabled) {
-        this.log(`   - command: ${cmd}`);
-        this.log(`   - answer : ${answer}`);
-      }
       this.log(`   - Zonenumber     : ${functions.hex2dec(zoneNumber)}`);
       this.log(`   - Zonename       : ${functions.hex2a(zoneName)}`);
       this.log(`   - Zonefunction   : ${functions.hex2dec(zoneFunction)}`);
@@ -248,7 +237,7 @@ class integraAlarmDriver extends Homey.Driver {
           socket.emit('errors', 'Alarmpanel type not found. Check IP, Port or alarmpanel settings', (err, data) => {
           });
         } else if (alarmIdentified) {
-          // send command for partitions
+          // send commands for partitions
           for (let totalPartitionsCount = 1; totalPartitionsCount <= totalZoneOutputPartitions[2]; totalPartitionsCount++) {
             this.log(`Reading partitionnumber : ${totalPartitionsCount}`);
             this.sendCommand(functions.createFrameArray(['EE', '00', `${functions.dec2hex2Digit(totalPartitionsCount)}`]));
@@ -275,7 +264,7 @@ module.exports = integraAlarmDriver;
  for (let totalZonesCount = 1; totalZonesCount <= totalZones; totalZonesCount++) {
    setTimeout(() => {
      this.log(`Reading zonenumber : ${totalZonesCount}`);
-     this.socketConnection(functions.createFrameArray(['EE', '01', `${functions.dec2hex2Digit(totalZonesCount)}`]), zones => {
+     this.sendCommand(functions.createFrameArray(['EE', '01', `${functions.dec2hex2Digit(totalZonesCount)}`]), zones => {
        this.parsePayloadZones(zones);
      });
    }, totalZonesCount * 950);

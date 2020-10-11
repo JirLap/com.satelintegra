@@ -7,9 +7,8 @@
   "capabilities": [
     "alarm_fire",
     "alarm_generic",
-    "homealarm_state",
+    "alarm_contact",
     "alarm_motion",
-    "alarm_smoke",
     "onoff"
   ],
   "images": {
@@ -19,17 +18,6 @@
   "pair": [
     {
       "id": "startpartition"
-    },
-    {
-      "id": "list_devices",
-      "template": "list_devices",
-      "navigation": {
-        "next": "add_devices"
-    }
-  },
-    {
-      "id": "add_devices",
-      "template": "add_devices"
     }
   ]
 }
