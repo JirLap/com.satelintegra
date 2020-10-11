@@ -1,2 +1,7 @@
 env.json
 node_modules/
+eslintrc.json
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+debug.log
+LICENSE

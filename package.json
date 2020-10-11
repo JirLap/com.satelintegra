@@ -9,9 +9,5 @@
     "eslint": "^7.10.0",
     "eslint-config-athom": "^2.1.0",
     "homey": "^2.8.0"
-  },
-  "dependencies": {
-    "satel-integra-integration-protocol": "^0.3.0",
-    "sync-socket": "^1.1.0"
   }
 }
