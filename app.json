@@ -29,28 +29,19 @@
   },
   "drivers": [
     {
-      "id": "satelintegra",
+      "id": "partitions",
       "name": {
-        "en": "Satel Integra"
+        "en": "Partitions"
       },
       "class": "homealarm",
       "capabilities": [
-        "alarm_fire",
         "alarm_generic",
-        "homealarm_state",
-        "alarm_motion",
-        "alarm_smoke",
-        "onoff"
+        "homealarm_state"
       ],
       "images": {
-        "large": "/drivers/satelintegra/assets/images/large.png",
-        "small": "/drivers/satelintegra/assets/images/small.png"
-      },
-      "pair": [
-        {
-          "id": "startpartition"
-        }
-      ]
+        "large": "/drivers/partitions/assets/images/large.png",
+        "small": "/drivers/partitions/assets/images/small.png"
+      }
     }
   ]
 }

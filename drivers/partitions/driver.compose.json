@@ -1,0 +1,15 @@
+{
+  "id": "partitions",
+  "name": {
+    "en": "Partitions"
+  },
+  "class": "homealarm",
+  "capabilities": [
+    "alarm_generic",
+    "homealarm_state"
+  ],
+  "images": {
+    "large": "/drivers/partitions/assets/images/large.png",
+    "small": "/drivers/partitions/assets/images/small.png"
+  }
+}

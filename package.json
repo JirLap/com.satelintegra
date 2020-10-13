@@ -9,5 +9,8 @@
     "eslint": "^7.10.0",
     "eslint-config-athom": "^2.1.0",
     "homey": "^2.8.0"
+  },
+  "dependencies": {
+    "@tuxjs/eventbus": "^1.0.3"
   }
 }
