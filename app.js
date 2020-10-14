@@ -16,13 +16,14 @@ const net = require('net');
 const eventBus = require('@tuxjs/eventbus');
 const functions = require('./js/functions');
 
-const debugEnabled = true;
+const debugEnabled = false;
 const devices = [];
 
 let satelSocket = {};
 let SatelSocketConnectionAlive = false;
 let totalZoneOutputPartitions = [];
 let alarmIdentified = false;
+let firstSystemRead = false;
 
 class integraAlarm extends Homey.App {
 
@@ -36,6 +37,10 @@ class integraAlarm extends Homey.App {
     this.log(`      Port:  ${Homey.ManagerSettings.get('alarmport')}`);
     this.log('-------------------------------------------------------');
 
+    // Start te socket and reconnect
+    this.socketConnection();
+    this.socketConnectorPoll();
+
     Homey.ManagerSettings.on('set', data => {
       this.log('Settings are changed');
       satelSocket.destroy();
@@ -48,30 +53,14 @@ class integraAlarm extends Homey.App {
     });
   }
 
-  async satelSystemRead() {
-    this.log(alarmIdentified);
-    this.log(SatelSocketConnectionAlive);
-    if (SatelSocketConnectionAlive) {
-      // Send command to read the systemtype.
-      this.socketSend(functions.createFrameArray(['7E']));
-      // send commands for partitions
-      if (alarmIdentified) {
-        for (let totalPartitionsCount = 1; totalPartitionsCount <= totalZoneOutputPartitions[2]; totalPartitionsCount++) {
-          this.log(`Reading partitionnumber : ${totalPartitionsCount}`);
-          this.socketSend(functions.createFrameArray(['EE', '00', `${functions.dec2hex2Digit(totalPartitionsCount)}`]));
-        }
-      }
-    }
-  }
-
-  async socketConnector() {
-    const socketTimerConnector = setInterval(() => {
+  async socketConnectorPoll() {
+    setInterval(() => {
       if (!SatelSocketConnectionAlive) {
         this.socketConnection(Number(Homey.ManagerSettings.get('alarmport')), Homey.ManagerSettings.get('alarmaddr'));
-        this.log(`Trying to connect to alarmpanel: ${Homey.ManagerSettings.get('alarmaddr')}`);
+        this.log(`Trying to reconnect to alarmpanel: ${Homey.ManagerSettings.get('alarmaddr')}`);
       }
-    }, 1000);
-    return null;
+    }, 10000);
+    return [];
   }
 
   // sendfunction for socket
@@ -80,12 +69,13 @@ class integraAlarm extends Homey.App {
     if (debugEnabled) {
       this.log(` * Send command: ${input.join('').match(/.{2}/g)}`);
     }
+    return [];
   }
 
   // create the socket
   async socketConnection(settings) {
     satelSocket = new net.Socket();
-    satelSocket.setTimeout(5000);
+    satelSocket.setTimeout(15000);
     satelSocket.connect(Number(Homey.ManagerSettings.get('alarmport')), Homey.ManagerSettings.get('alarmaddr'), () => {
     });
 
@@ -98,15 +88,17 @@ class integraAlarm extends Homey.App {
 
     // socket connect
     satelSocket.on('connect', () => {
-      this.log(`Connected with alarmsystem on IP: ${Homey.ManagerSettings.get('alarmaddr')}`);
+      this.log(`Connected with alarmpanel on IP: ${Homey.ManagerSettings.get('alarmaddr')}`);
       SatelSocketConnectionAlive = true;
-
+      if (!firstSystemRead) {
+        this.satelSystemTypeRead();
+      }
       return [];
     });
 
     // socket close
     satelSocket.on('close', () => {
-      this.log(`Connection closed to IP: ${Homey.ManagerSettings.get('alarmaddr')}`);
+      this.log(`Connection closed to alarmpanel on IP: ${Homey.ManagerSettings.get('alarmaddr')}`);
       SatelSocketConnectionAlive = false;
       return [];
     });
@@ -121,10 +113,10 @@ class integraAlarm extends Homey.App {
 
     // socket data
     satelSocket.on('data', data => {
+      const answer = functions.ETHM1AnswerToArray(data);
+      const payload = answer.slice(2, -4);
       if (debugEnabled) {
-        this.log(' * Received data from alarm...');
-        const answer = functions.ETHM1AnswerToArray(data);
-        const payload = answer.slice(2, -4);
+        this.log(' * Received data from alarmpanel...');
 
         if (functions.verifyAnswer(answer)) {
           if (debugEnabled) {
@@ -133,28 +125,68 @@ class integraAlarm extends Homey.App {
         } else if (debugEnabled) {
           this.log(`   - incorrect answer:${answer}`);
         }
-
-        switch (payload[0]) {
-          case '7E':
-            this.log('Reading systemtype');
-            this.parsePayloadSystemType(payload);
-            break;
-          case 'EE':
-            if (payload[1] == '00') {
-              this.parsePayloadPartition(payload);
-            }
-            break;
-          default: this.log('UNKOWN');
+      }
+      switch (payload[0]) {
+        case '7E':
+          this.log('Reading systemtype');
+          this.parsePayloadSystemType(payload);
+          break;
+        case 'EE':
+          if (payload[1] == '00') {
+            eventBus.publish('partitions', payload);
+          } else if (payload[1] == '01') {
+            this.parsePayloadZones(payload);
+          } else if (payload[1] == '04') {
+            eventBus.publish('outputs', payload);
+          }
+          break;
+        default: if (debugEnabled) {
+          this.log('UNKOWN DATA RECEIVED');
         }
       }
     });
+  }
+
+  async satelSystemTypeRead() {
+    if (SatelSocketConnectionAlive) {
+      firstSystemRead = true;
+      // Send command to read the systemtype.
+      this.socketSend(functions.createFrameArray(['7E']));
+      // send commands for partitions
+      setTimeout(() => {
+        if (alarmIdentified) {
+          for (let totalPartitionsCount = 1; totalPartitionsCount <= totalZoneOutputPartitions[2]; totalPartitionsCount++) {
+            setTimeout(() => {
+              if (debugEnabled) {
+                this.log(`Reading partitionnumber : ${totalPartitionsCount}`);
+              }
+              this.socketSend(functions.createFrameArray(['EE', '00', `${functions.dec2hex2Digit(totalPartitionsCount)}`]));
+            }, totalPartitionsCount * 100);
+          }
+
+          for (let totalOutputCount = 1; totalOutputCount <= totalZoneOutputPartitions[1]; totalOutputCount++) {
+            setTimeout(() => {
+              this.log(`Reading outputnumber : ${totalOutputCount}`);
+              this.socketSend(functions.createFrameArray(['EE', '04', `${functions.dec2hex2Digit(totalOutputCount)}`]));
+            }, totalOutputCount * 100);
+          }
+          /*
+          for (let totalZonesCount = 1; totalZonesCount <= totalZoneOutputPartitions[0]; totalZonesCount++) {
+            setTimeout(() => {
+              this.log(`Reading zones : ${totalZonesCount}`);
+              this.socketSend(functions.createFrameArray(['EE', '01', `${functions.dec2hex2Digit(totalZonesCount)}`]));
+            }, totalZonesCount * 100);
+          }
+          */
+        }
+      }, 1000);
+    }
   }
 
   async parsePayloadSystemType(payload) {
     if (!Array.isArray(payload)) {
       return '';
     }
-    // const answer = payload.slice(1);
     switch (functions.hex2dec(payload[1])) {
       case 0:
         this.log('type = Integra 24');
@@ -203,54 +235,8 @@ class integraAlarm extends Homey.App {
         break;
       default: this.log('UNKNOWN Alarm type');
     }
-    return payload;
-  } // parsePayloadSystemType
-
-  // parsePayloadPartitions
-  async parsePayloadPartition(payload) {
-    if (!Array.isArray(payload)) {
-      return '';
-    }
-    const partitionName = payload.slice(4, 20);
-    this.log(`   - Partitionnumber : ${functions.hex2dec(payload[2])}`);
-    this.log(`   - Partitionname   : ${functions.hex2a(partitionName)}`);
-    const device = {
-      name: `${functions.hex2a(partitionName)}`,
-      data: {
-        id: `P${functions.hex2dec(payload[2])}`,
-      },
-      capabilities: ['onoff', 'alarm_generic'],
-      icon: '/house.svg',
-    };
-    devices.push(device);
-    return payload;
-  } // parsePayloadPartitions
-
-  async parsePayloadOutput(payload) {
-    if (!Array.isArray(payload)) {
-      return '';
-    }
-    const outputNumber = payload.slice(2, 3);
-    const outputFunction = payload.slice(3, 4);
-    const outputName = payload.slice(4, 20);
-    if (outputFunction == '00') {
-      this.log('   - OUTPUT NOT USED');
-    } else {
-      this.log(`   - Outputnumber   : ${functions.hex2dec(outputNumber)}`);
-      this.log(`   - Outputsname    : ${functions.hex2a(outputName)}`);
-      this.log(`   - Outputfunction : ${functions.hex2dec(outputFunction)}`);
-      const device = {
-        name: `${functions.hex2a(outputName)}`,
-        data: {
-          id: `O${functions.hex2dec(outputNumber)}`,
-        },
-        capabilities: ['onoff'],
-        icon: '/alarm.svg',
-      };
-      devices.push(device);
-    }
-    return payload;
-  } // parsePayloadPartitions
+    return [];
+  }
 
   async parsePayloadZones(payload) {
     if (!Array.isArray(payload)) {
@@ -267,12 +253,8 @@ class integraAlarm extends Homey.App {
       this.log(`   - Zonename       : ${functions.hex2a(zoneName)}`);
       this.log(`   - Zonefunction   : ${functions.hex2dec(zoneFunction)}`);
     }
-    return payload;
-  } // parsePayloadZones
-
-      // Start the socket
-      socketConnector();
-      satelSystemRead();
+    return [];
+  }
 
 }
 
