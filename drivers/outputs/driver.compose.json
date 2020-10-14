@@ -1,12 +1,11 @@
 {
-  "id": "partitions",
+  "id": "outputs",
   "name": {
-    "en": "Partitions"
+    "en": "Outputs"
   },
   "class": "homealarm",
   "capabilities": [
-    "alarm_generic",
-    "homealarm_state"
+    "onoff"
   ],
   "images": {
     "large": "/drivers/partitions/assets/images/large.png",

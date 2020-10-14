@@ -14,19 +14,17 @@ class satelOutputsDriver extends Homey.Driver {
    * onInit is called when the driver is initialized.
    */
   async onInit() {
-    this.log('---------------------------');
     this.log('Driver has been initialized');
-    this.log('---------------------------');
 
     eventBus.subcribe('partitions', payload => {
       if (!Array.isArray(payload)) {
         return '';
       }
       const partitionName = payload.slice(4, 20);
-      this.log('   -----------------------------------------------------}');
+      this.log('   -----------------------------------------------------');
       this.log(`   - Partitionnumber : ${functions.hex2dec(payload[2])}`);
       this.log(`   - Partitionname   : ${functions.hex2a(partitionName)}`);
-      this.log('   -----------------------------------------------------}');
+      this.log('   -----------------------------------------------------');
       const device = {
         name: `${functions.hex2a(partitionName)}`,
         data: {

@@ -166,14 +166,18 @@ class integraAlarm extends Homey.App {
 
           for (let totalOutputCount = 1; totalOutputCount <= totalZoneOutputPartitions[1]; totalOutputCount++) {
             setTimeout(() => {
-              this.log(`Reading outputnumber : ${totalOutputCount}`);
+              if (debugEnabled) {
+                this.log(`Reading outputnumber : ${totalOutputCount}`);
+              }
               this.socketSend(functions.createFrameArray(['EE', '04', `${functions.dec2hex2Digit(totalOutputCount)}`]));
             }, totalOutputCount * 100);
           }
           /*
           for (let totalZonesCount = 1; totalZonesCount <= totalZoneOutputPartitions[0]; totalZonesCount++) {
             setTimeout(() => {
+              if (debugEnabled) {
               this.log(`Reading zones : ${totalZonesCount}`);
+              if (debugEnabled) {
               this.socketSend(functions.createFrameArray(['EE', '01', `${functions.dec2hex2Digit(totalZonesCount)}`]));
             }, totalZonesCount * 100);
           }

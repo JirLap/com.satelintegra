@@ -8,34 +8,43 @@ const functions = require('../../js/functions');
 
 const devices = [];
 
-class satelPartitionsDriver extends Homey.Driver {
+class satelOutputsDriver extends Homey.Driver {
 
   /**
    * onInit is called when the driver is initialized.
    */
   async onInit() {
-    this.log('---------------------------');
-    this.log('Driver has been initialized');
-    this.log('---------------------------');
+    this.log('   Driver has been initialized');
 
-    eventBus.subcribe('partitions', payload => {
+    eventBus.subcribe('outputs', payload => {
       if (!Array.isArray(payload)) {
         return '';
       }
-      const partitionName = payload.slice(4, 20);
-      this.log('   -----------------------------------------------------}');
-      this.log(`   - Partitionnumber : ${functions.hex2dec(payload[2])}`);
-      this.log(`   - Partitionname   : ${functions.hex2a(partitionName)}`);
-      this.log('   -----------------------------------------------------}');
-      const device = {
-        name: `${functions.hex2a(partitionName)}`,
-        data: {
-          id: `P${functions.hex2dec(payload[2])}`,
-        },
-        capabilities: ['onoff', 'alarm_generic'],
-        icon: '/house.svg',
-      };
-      devices.push(device);
+      const outputNumber = payload.slice(2, 3);
+      const outputFunction = payload.slice(3, 4);
+      const outputName = payload.slice(4, 20);
+      if (outputFunction == '00') {
+        this.log('      -----------------------------------------------------');
+        this.log(`      - Outputnumber   : ${functions.hex2dec(outputNumber)}`);
+        this.log('      - OUTPUT NOT USED');
+        this.log('      -----------------------------------------------------');
+      } else {
+        this.log('      -----------------------------------------------------');
+        this.log(`      - Outputnumber   : ${functions.hex2dec(outputNumber)}`);
+        this.log(`      - Outputsname    : ${functions.hex2a(outputName)}`);
+        this.log(`      - Outputfunction : ${functions.hex2dec(outputFunction)}`);
+        this.log('      -----------------------------------------------------');
+
+        const device = {
+          name: `${functions.hex2a(outputName)}`,
+          data: {
+            id: `O${functions.hex2dec(outputNumber)}`,
+          },
+          capabilities: ['onoff'],
+          icon: '/alarm.svg',
+        };
+        devices.push(device);
+      }
     });
   }
 
@@ -49,4 +58,4 @@ class satelPartitionsDriver extends Homey.Driver {
 
 }
 
-module.exports = satelPartitionsDriver;
+module.exports = satelOutputsDriver;
