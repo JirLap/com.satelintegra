@@ -4,20 +4,12 @@
 
 'use strict';
 
-/*  EVentbus
-EventBus.publish('event', 'hi');
-EventBus.subcribe('event', value => {
-  this.log(`value: ${value}`);
-});
-}
-*/
-
 const Homey = require('homey');
 const net = require('net');
 const eventBus = require('@tuxjs/eventbus');
 const functions = require('./js/functions');
 
-const debugEnabled = true;
+const debugEnabled = false;
 
 let satelSocket = {};
 let SatelSocketConnectionAlive = false;
@@ -125,15 +117,15 @@ class integraAlarm extends Homey.App {
           this.log('Reading systemtype');
           this.parsePayloadSystemType(payload);
           break;
-        case 'EE':
+        case 'EE': // systaemstate
           if (payload[1] == '00') {
             // send partiotion info to partitions driver
             eventBus.publish('partitions', payload);
           } else if (payload[1] == '01') {
-            // send partiotion info to all zone drivers
+            // send zones info to all zone drivers
             eventBus.publish('zones', payload);
           } else if (payload[1] == '04') {
-            // send partition info to output driver
+            // send output info to output driver
             eventBus.publish('outputs', payload);
           }
           break;
@@ -183,7 +175,7 @@ class integraAlarm extends Homey.App {
                 this.log(`Reading partitionnumber : ${totalPartitionsCount}`);
               }
               this.socketSend(functions.createFrameArray(['EE', '00', `${functions.dec2hex2Digit(totalPartitionsCount)}`]));
-            }, totalPartitionsCount * 100);
+            }, totalPartitionsCount * 200);
           }
 
           for (let totalOutputCount = 1; totalOutputCount <= totalZoneOutputPartitions[1]; totalOutputCount++) {
@@ -193,7 +185,7 @@ class integraAlarm extends Homey.App {
                 this.log(`Reading outputnumber : ${totalOutputCount}`);
               }
               this.socketSend(functions.createFrameArray(['EE', '04', `${functions.dec2hex2Digit(totalOutputCount)}`]));
-            }, totalOutputCount * 100);
+            }, totalOutputCount * 200);
           }
           for (let totalZonesCount = 1; totalZonesCount <= totalZoneOutputPartitions[0]; totalZonesCount++) {
             setTimeout(() => {
@@ -202,43 +194,33 @@ class integraAlarm extends Homey.App {
                 this.log(`Reading zones : ${totalZonesCount}`);
               }
               this.socketSend(functions.createFrameArray(['EE', '01', `${functions.dec2hex2Digit(totalZonesCount)}`]));
-            }, totalZonesCount * 100);
+            }, totalZonesCount * 200);
           }
         }
       }, 1000);
-      this.satelSystemPartitionStatus();
-      this.satelSystemPartitionAlarm();
-      this.satelSystemZoneStatus();
-      this.satelSystemOutputStatus();
+      this.satelSystemDevicesStatus();
     }
   }
 
-  async satelSystemPartitionStatus() {
+  async satelSystemDevicesStatus() {
     setInterval(() => {
-      // send command for zone violation
-      this.socketSend(functions.createFrameArray(['0A']));
-    }, 1500);
-  }
-
-  async satelSystemPartitionAlarm() {
-    setInterval(() => {
-      // send command for zone violation
-      this.socketSend(functions.createFrameArray(['13']));
-    }, 1500);
-  }
-
-  async satelSystemZoneStatus() {
-    setInterval(() => {
-      // send command for zone violation
-      this.socketSend(functions.createFrameArray(['00']));
-    }, 1500);
-  }
-
-  async satelSystemOutputStatus() {
-    setInterval(() => {
-      // send command for zone violation
-      this.socketSend(functions.createFrameArray(['17']));
-    }, 1500);
+      setTimeout(() => {
+      // send command for partition status
+        this.socketSend(functions.createFrameArray(['0A']));
+      }, 100);
+      setTimeout(() => {
+        // send command for partitionalarmss
+        this.socketSend(functions.createFrameArray(['13']));
+      }, 300);
+      setTimeout(() => {
+        // send command for zone violation
+        this.socketSend(functions.createFrameArray(['00']));
+      }, 100);
+      setTimeout(() => {
+        // send command for output status
+        this.socketSend(functions.createFrameArray(['17']));
+      }, 500);
+    }, 1000);
   }
 
   // parse data to identyfy alarmpanel
