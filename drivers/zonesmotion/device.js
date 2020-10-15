@@ -4,8 +4,7 @@ const Homey = require('homey');
 const eventBus = require('@tuxjs/eventbus');
 const functions = require('../../js/functions');
 
-
-class MyDevice extends Homey.Device {
+class satelZonesMotionDevice extends Homey.Device {
 
   /**
    * onInit is called when the device is initialized.
@@ -51,4 +50,4 @@ class MyDevice extends Homey.Device {
 
 }
 
-module.exports = MyDevice;
+module.exports = satelZonesMotionDevice;

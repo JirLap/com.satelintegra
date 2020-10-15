@@ -102,7 +102,7 @@ function verifyAnswer(answer) {
 } // verifyAnswer
 
 function partitionListToByteArray(partitions, size = 4) {
-  const ary = partitions.split(',');
+  const ary = partitions.toString().split(',');
   const byteArray = [];
   for (let i = 0; i < (8 * size); i++) {
     // if index+1 equals partition number, set as 1.
