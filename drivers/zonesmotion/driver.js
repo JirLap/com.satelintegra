@@ -8,7 +8,7 @@ const functions = require('../../js/functions');
 
 const devices = [];
 
-class satelOutputsDriver extends Homey.Driver {
+class satelZonesMotionDriver extends Homey.Driver {
 
   /**
    * onInit is called when the driver is initialized.
@@ -16,22 +16,25 @@ class satelOutputsDriver extends Homey.Driver {
   async onInit() {
     this.log('Driver has been initialized');
 
-    eventBus.subcribe('partitions', payload => {
+    eventBus.subcribe('zones', payload => {
       if (!Array.isArray(payload)) {
         return '';
       }
-      const partitionNumber = payload.slice(2, 3);
-      const partitionName = payload.slice(4, 20);
-      this.log('   -----------------------------------------------------');
-      this.log(`   - Partitionnumber : ${functions.hex2dec(partitionNumber)}`);
-      this.log(`   - Partitionname   : ${functions.hex2a(partitionName)}`);
-      this.log('   -----------------------------------------------------');
+      const zoneNumber = payload.slice(2, 3);
+      const zoneFunction = payload.slice(3, 4);
+      const zoneName = payload.slice(4, 20);
+      this.log('  -----------------------------------------------------');
+      this.log(`  - Zonenumber     : ${functions.hex2dec(zoneNumber)}`);
+      this.log(`  - Zonename       : ${functions.hex2a(zoneName)}`);
+      this.log(`  - Zonefunction   : ${functions.hex2dec(zoneFunction)}`);
+      this.log('  -----------------------------------------------------');
+
       const device = {
-        name: `${functions.hex2a(partitionName)}`,
+        name: `${functions.hex2a(zoneName)}`,
         data: {
-          id: `P${functions.hex2dec(partitionNumber)}`,
+          id: `Z${functions.hex2dec(payload[2])}`,
         },
-        capabilities: ['onoff', 'alarm_generic'],
+        capabilities: ['alarm_motion'],
         icon: 'icon.svg',
       };
       devices.push(device);
@@ -48,4 +51,4 @@ class satelOutputsDriver extends Homey.Driver {
 
 }
 
-module.exports = satelOutputsDriver;
+module.exports = satelZonesMotionDriver;

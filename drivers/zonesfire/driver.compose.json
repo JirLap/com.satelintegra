@@ -1,13 +1,13 @@
 {
-  "id": "outputs",
+  "id": "zonesfire",
   "name": {
-    "en": "Outputs"
+    "en": "Zones Fire"
   },
   "class": "homealarm",
   "capabilities": [
-    "onoff"
+    "alarm_fire"
   ],
-  "icon": "/drivers/outputs/assets/icon.svg",
+  "icon": "/drivers/zonesfire/assets/icon.svg",
   "pair": [
     {
       "id": "list_devices",

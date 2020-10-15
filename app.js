@@ -135,7 +135,7 @@ class integraAlarm extends Homey.App {
           if (payload[1] == '00') {
             eventBus.publish('partitions', payload);
           } else if (payload[1] == '01') {
-            this.parsePayloadZones(payload);
+            eventBus.publish('zones', payload);
           } else if (payload[1] == '04') {
             eventBus.publish('outputs', payload);
           }
@@ -172,16 +172,14 @@ class integraAlarm extends Homey.App {
               this.socketSend(functions.createFrameArray(['EE', '04', `${functions.dec2hex2Digit(totalOutputCount)}`]));
             }, totalOutputCount * 100);
           }
-          /*
           for (let totalZonesCount = 1; totalZonesCount <= totalZoneOutputPartitions[0]; totalZonesCount++) {
             setTimeout(() => {
               if (debugEnabled) {
-              this.log(`Reading zones : ${totalZonesCount}`);
-              if (debugEnabled) {
+                this.log(`Reading zones : ${totalZonesCount}`);
+              }
               this.socketSend(functions.createFrameArray(['EE', '01', `${functions.dec2hex2Digit(totalZonesCount)}`]));
             }, totalZonesCount * 100);
           }
-          */
         }
       }, 1000);
     }
@@ -238,24 +236,6 @@ class integraAlarm extends Homey.App {
         alarmIdentified = true;
         break;
       default: this.log('UNKNOWN Alarm type');
-    }
-    return [];
-  }
-
-  async parsePayloadZones(payload) {
-    if (!Array.isArray(payload)) {
-      return '';
-    }
-    const cmd = payload[0];
-    const zoneNumber = payload.slice(2, 3);
-    const zoneFunction = payload.slice(3, 4);
-    const zoneName = payload.slice(4, 20);
-    if (cmd === 'EF') {
-      this.log('   - ZONE NOT USED');
-    } else {
-      this.log(`   - Zonenumber     : ${functions.hex2dec(zoneNumber)}`);
-      this.log(`   - Zonename       : ${functions.hex2a(zoneName)}`);
-      this.log(`   - Zonefunction   : ${functions.hex2dec(zoneFunction)}`);
     }
     return [];
   }

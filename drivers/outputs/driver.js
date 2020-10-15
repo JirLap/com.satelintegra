@@ -20,14 +20,12 @@ class satelOutputsDriver extends Homey.Driver {
       if (!Array.isArray(payload)) {
         return '';
       }
+      const cmd = payload[0];
       const outputNumber = payload.slice(2, 3);
       const outputFunction = payload.slice(3, 4);
       const outputName = payload.slice(4, 20);
-      if (outputFunction == '00') {
-        this.log('      -----------------------------------------------------');
-        this.log(`      - Outputnumber   : ${functions.hex2dec(outputNumber)}`);
-        this.log('      - OUTPUT NOT USED');
-        this.log('      -----------------------------------------------------');
+      if (cmd == 'EF' || outputFunction == '00') {
+        this.log(`      - Output ${functions.hex2dec(outputNumber)} not used `);
       } else {
         this.log('      -----------------------------------------------------');
         this.log(`      - Outputnumber   : ${functions.hex2dec(outputNumber)}`);
@@ -41,7 +39,7 @@ class satelOutputsDriver extends Homey.Driver {
             id: `O${functions.hex2dec(outputNumber)}`,
           },
           capabilities: ['onoff'],
-          icon: '/alarm.svg',
+          icon: '/icon.svg',
         };
         devices.push(device);
       }
@@ -52,8 +50,8 @@ class satelOutputsDriver extends Homey.Driver {
    * onPairListDevices is called when a user is adding a device and the 'list_devices' view is called.
    * This should return an array with the data of devices that are available for pairing.
    */
-  async onPairListDevices() {
-    return devices;
+  async onPairListDevices(data, callback) {
+    callback(null, devices);
   }
 
 }

@@ -8,10 +8,7 @@
     "alarm_generic",
     "homealarm_state"
   ],
-  "images": {
-    "large": "/drivers/partitions/assets/images/large.png",
-    "small": "/drivers/partitions/assets/images/small.png"
-  },
+  "icon": "/drivers/partitions/assets/icon.svg",
   "pair": [
     {
       "id": "list_devices",

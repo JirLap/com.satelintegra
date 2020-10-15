@@ -1,13 +1,13 @@
 {
-  "id": "outputs",
+  "id": "zonesmotion",
   "name": {
-    "en": "Outputs"
+    "en": "Zones Motion"
   },
   "class": "homealarm",
   "capabilities": [
-    "onoff"
+    "alarm_motion"
   ],
-  "icon": "/drivers/outputs/assets/icon.svg",
+  "icon": "/drivers/zonesmotion/assets/icon.svg",
   "pair": [
     {
       "id": "list_devices",

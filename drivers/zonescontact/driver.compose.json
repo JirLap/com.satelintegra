@@ -1,13 +1,13 @@
 {
-  "id": "outputs",
+  "id": "zonescontact",
   "name": {
-    "en": "Outputs"
+    "en": "Zones Contact"
   },
   "class": "homealarm",
   "capabilities": [
-    "onoff"
+    "alarm_contact"
   ],
-  "icon": "/drivers/outputs/assets/icon.svg",
+  "icon": "/drivers/zonesmotion/assets/icon.svg",
   "pair": [
     {
       "id": "list_devices",
