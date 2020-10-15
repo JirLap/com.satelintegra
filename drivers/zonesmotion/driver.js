@@ -1,4 +1,6 @@
+/* eslint-disable consistent-return */
 /* eslint-disable max-len */
+/* eslint-disable eqeqeq */
 
 'use strict';
 

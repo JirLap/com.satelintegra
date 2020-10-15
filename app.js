@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 
@@ -16,8 +17,7 @@ const net = require('net');
 const eventBus = require('@tuxjs/eventbus');
 const functions = require('./js/functions');
 
-const debugEnabled = false;
-const devices = [];
+const debugEnabled = true;
 
 let satelSocket = {};
 let SatelSocketConnectionAlive = false;
