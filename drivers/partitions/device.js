@@ -4,21 +4,21 @@ const Homey = require('homey');
 const eventBus = require('@tuxjs/eventbus');
 const functions = require('../../js/functions');
 
-
-class MyDevice extends Homey.Device {
+class Device extends Homey.Device {
 
   /**
    * onInit is called when the device is initialized.
    */
   async onInit() {
-    this.log('MyDevice has been initialized');
+    this.log('Device has been initialized');
+    eventBus.publish('Partitionstatus', true);
   }
 
   /**
    * onAdded is called when the user adds the device, called just after pairing.
    */
   async onAdded() {
-    this.log('MyDevice has been added');
+    this.log('Device has been added');
   }
 
   /**
@@ -30,7 +30,7 @@ class MyDevice extends Homey.Device {
    * @returns {Promise<string|void>} return a custom message that will be displayed
    */
   async onSettings({ oldSettings, newSettings, changedKeys }) {
-    this.log('MyDevice settings where changed');
+    this.log('Device settings where changed');
   }
 
   /**
@@ -39,16 +39,16 @@ class MyDevice extends Homey.Device {
    * @param {string} name The new name
    */
   async onRenamed(name) {
-    this.log('MyDevice was renamed');
+    this.log('Device was renamed');
   }
 
   /**
    * onDeleted is called when the user deleted the device.
    */
   async onDeleted() {
-    this.log('MyDevice has been deleted');
+    this.log('Device has been deleted');
   }
 
 }
 
-module.exports = MyDevice;
+module.exports = Device;

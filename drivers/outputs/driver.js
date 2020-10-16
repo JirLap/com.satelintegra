@@ -10,7 +10,7 @@ const functions = require('../../js/functions');
 
 const devices = [];
 
-class satelOutputsDriver extends Homey.Driver {
+class Driver extends Homey.Driver {
 
   /**
    * onInit is called when the driver is initialized.
@@ -58,4 +58,4 @@ class satelOutputsDriver extends Homey.Driver {
 
 }
 
-module.exports = satelOutputsDriver;
+module.exports = Driver;
