@@ -12,6 +12,14 @@ class Device extends Homey.Device {
   async onInit() {
     this.log('Device has been initialized');
     eventBus.publish('Partitionstatus', true);
+
+    eventBus.subcribe('partitionstatus', payload => {
+      this.log('Reading partitionsstatus');
+    });
+
+    eventBus.subcribe('partitionalarm', payload => {
+      this.log('Reading partitionsalarm');
+    });
   }
 
   /**

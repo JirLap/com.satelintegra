@@ -34,6 +34,7 @@ class integraAlarm extends Homey.App {
     this.socketConnection();
     this.socketConnectorPoll();
 
+    // If devices are init start statuspolling
     eventBus.subcribe('zonesstatus', data => {
       if (data) {
         this.satelSystemZoneStatus();
@@ -151,27 +152,19 @@ class integraAlarm extends Homey.App {
           break;
         case '0A':
           // send partitionsstatus to partition device
-          this.log('Reading partitionsstatus');
           eventBus.publish('partitionstatus', payload);
-          // this.log(functions.partitionListToByteArray(payload.slice(1)));
           break;
         case '13':
           // send partitionsalarms to partition device
-          this.log('Reading partitionsalarm');
           eventBus.publish('partitionalarm', payload);
-          // this.log(functions.partitionListToByteArray(payload.slice(1)));
           break;
         case '00':
           // send zonestatus to all zone devices
-          this.log('Reading zonestatus');
           eventBus.publish('zonestatus', payload);
-          // this.log(functions.partitionListToByteArray(payload.slice(1)));
           break;
         case '17':
           // send outputstatus to output device
-          this.log('Reading outputstatus');
           eventBus.publish('outputtatus', payload);
-          // this.log(functions.partitionListToByteArray(payload.slice(1)));
           break;
         default:
           if (debugEnabled) {

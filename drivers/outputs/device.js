@@ -12,6 +12,10 @@ class Device extends Homey.Device {
   async onInit() {
     this.log('Device has been initialized');
     eventBus.publish('outputstatus', true);
+
+    eventBus.subcribe('outputtatus', payload => {
+      this.log('Reading outputstatus');
+    });
   }
 
   /**
