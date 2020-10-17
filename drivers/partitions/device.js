@@ -4,29 +4,57 @@ const Homey = require('homey');
 const eventBus = require('@tuxjs/eventbus');
 const functions = require('../../js/functions');
 
+const debugEnabled = true;
+
 class Device extends Homey.Device {
 
   /**
    * onInit is called when the device is initialized.
    */
   async onInit() {
-    this.log('Device has been initialized');
-    eventBus.publish('Partitionstatus', true);
+    this.log(`Partition: ${this.getName()} initialized ID: ${this.getDeviceId()}`);
 
+    eventBus.publish('partitionstatuspolltrue', true);
+
+    // incoming partitionstatus
     eventBus.subcribe('partitionstatus', payload => {
-      this.log('Reading partitionsstatus');
+      this.partitionStatus(payload);
     });
 
+    // incoming partitionsalarm
     eventBus.subcribe('partitionalarm', payload => {
-      this.log('Reading partitionsalarm');
+      // this.partitionAlarms(payload);
     });
+  }
+
+  getDeviceId() {
+    const deviceID = Object.values(this.getData());
+    return deviceID[0];
+  }
+
+  async partitionStatus(payload) {
+    payload = payload.slice(1);
+    if (debugEnabled) {
+      this.log('Reading partitionsstatus');
+
+      const binarray = Array.from(functions.hex2bin(payload));
+      this.log(binarray);
+    }
+  }
+
+  async partitionAlarms(payload) {
+    payload = payload.slice(1);
+    if (debugEnabled) {
+      this.log('Reading partitionsalarm');
+      this.log(functions.hex2bin(payload));
+    }
   }
 
   /**
    * onAdded is called when the user adds the device, called just after pairing.
    */
   async onAdded() {
-    this.log('Device has been added');
+    this.log(`Device ${this.getName()} has been added`);
   }
 
   /**
@@ -42,19 +70,10 @@ class Device extends Homey.Device {
   }
 
   /**
-   * onRenamed is called when the user updates the device's name.
-   * This method can be used this to synchronise the name to the device.
-   * @param {string} name The new name
-   */
-  async onRenamed(name) {
-    this.log('Device was renamed');
-  }
-
-  /**
    * onDeleted is called when the user deleted the device.
    */
   async onDeleted() {
-    this.log('Device has been deleted');
+    this.log(`Device ${this.getName()} has been deleted`);
   }
 
 }

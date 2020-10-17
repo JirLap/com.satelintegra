@@ -16,7 +16,7 @@ class satelZonesFireDriver extends Homey.Driver {
    * onInit is called when the driver is initialized.
    */
   async onInit() {
-    this.log('Driver has been initialized');
+    this.log('   Driver has been initialized');
 
     eventBus.subcribe('zones', payload => {
       if (!Array.isArray(payload)) {
@@ -34,7 +34,7 @@ class satelZonesFireDriver extends Homey.Driver {
       const device = {
         name: `${functions.hex2a(zoneName)}`,
         data: {
-          id: `Z${functions.hex2dec(payload[2])}`,
+          id: `${functions.hex2dec(payload[2])}`,
         },
         capabilities: ['alarm_fire'],
         icon: 'icon.svg',

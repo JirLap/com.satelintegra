@@ -34,7 +34,7 @@ class satelZonesContactDriver extends Homey.Driver {
       const device = {
         name: `${functions.hex2a(zoneName)}`,
         data: {
-          id: `Z${functions.hex2dec(payload[2])}`,
+          id: `${functions.hex2dec(payload[2])}`,
         },
         capabilities: ['alarm_contact'],
         icon: 'icon.svg',

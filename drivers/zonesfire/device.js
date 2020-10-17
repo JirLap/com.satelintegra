@@ -4,25 +4,33 @@ const Homey = require('homey');
 const eventBus = require('@tuxjs/eventbus');
 const functions = require('../../js/functions');
 
+const debugEnabled = true;
+
 class Device extends Homey.Device {
 
   /**
    * onInit is called when the device is initialized.
    */
   async onInit() {
-    this.log('Device has been initialized');
-    eventBus.publish('zonesstatus', true);
+    this.log(`Zone-Fire: ${this.getName()} initialized ID: ${this.getDeviceId()}`);
+
+    eventBus.publish('zonetatuspolltrue', true);
 
     eventBus.subcribe('zonestatus', payload => {
       this.log('Reading zonestatus');
     });
   }
 
+  getDeviceId() {
+    const deviceID = Object.values(this.getData());
+    return deviceID[0];
+  }
+
   /**
    * onAdded is called when the user adds the device, called just after pairing.
    */
   async onAdded() {
-    this.log('Device has been added');
+    this.log(`Device ${this.getName()} has been added`);
   }
 
   /**
@@ -37,20 +45,12 @@ class Device extends Homey.Device {
     this.log('Device settings where changed');
   }
 
-  /**
-   * onRenamed is called when the user updates the device's name.
-   * This method can be used this to synchronise the name to the device.
-   * @param {string} name The new name
-   */
-  async onRenamed(name) {
-    this.log('Device was renamed');
-  }
 
   /**
    * onDeleted is called when the user deleted the device.
    */
   async onDeleted() {
-    this.log('Device has been deleted');
+    this.log(`Device ${this.getName()} has been deleted`);
   }
 
 }

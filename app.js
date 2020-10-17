@@ -35,19 +35,19 @@ class integraAlarm extends Homey.App {
     this.socketConnectorPoll();
 
     // If devices are init start statuspolling
-    eventBus.subcribe('zonesstatus', data => {
+    eventBus.subcribe('zonetatuspolltrue', data => {
       if (data) {
         this.satelSystemZoneStatus();
       }
     });
 
-    eventBus.subcribe('outputstatus', data => {
+    eventBus.subcribe('outputstatuspolltrue', data => {
       if (data) {
         this.satelSystemOuputstatus();
       }
     });
 
-    eventBus.subcribe('Partitionstatus', data => {
+    eventBus.subcribe('partitionstatuspolltrue', data => {
       if (data) {
         this.satelSystemPartiotionStatus();
         this.satelSystemPartitionAlarms();
@@ -266,7 +266,8 @@ class integraAlarm extends Homey.App {
         break;
       case 1:
         this.log('type = Integra 32');
-        totalZoneOutputPartitions = ['32', '32', '16'];
+        totalZoneOutputPartitions = ['16', '6', '3'];
+        // totalZoneOutputPartitions = ['32', '32', '16'];
         alarmIdentified = true;
         break;
       case 2:

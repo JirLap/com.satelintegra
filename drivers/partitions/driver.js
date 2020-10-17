@@ -15,7 +15,7 @@ class Driver extends Homey.Driver {
    * onInit is called when the driver is initialized.
    */
   async onInit() {
-    this.log('Driver has been initialized');
+    this.log('  Driver has been initialized');
 
     eventBus.subcribe('partitions', payload => {
       if (!Array.isArray(payload)) {
@@ -30,7 +30,7 @@ class Driver extends Homey.Driver {
       const device = {
         name: `${functions.hex2a(partitionName)}`,
         data: {
-          id: `P${functions.hex2dec(partitionNumber)}`,
+          id: `${functions.hex2dec(partitionNumber)}`,
         },
         capabilities: ['onoff', 'alarm_generic'],
         icon: 'icon.svg',
