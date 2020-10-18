@@ -1,3 +1,5 @@
+/* eslint-disable eqeqeq */
+
 'use strict';
 
 const Homey = require('homey');
@@ -36,9 +38,18 @@ class Device extends Homey.Device {
     payload = payload.slice(1);
     if (debugEnabled) {
       this.log('Reading partitionsstatus');
-
-      const binarray = Array.from(functions.hex2bin(payload));
-      this.log(binarray);
+    }
+    const activepartitions = [];
+    let p = 0;
+    for (const plist of payload) {
+      const binarray = Array.from(functions.hex2bin(plist));
+      for (let i = binarray.length - 1; i >= 0; --i) {
+        p++;
+        if (binarray[i] == 1) {
+          activepartitions.push(p);
+          this.log(` - active partitions (now)   : ${activepartitions}`);
+        }
+      }
     }
   }
 
@@ -46,15 +57,8 @@ class Device extends Homey.Device {
     payload = payload.slice(1);
     if (debugEnabled) {
       this.log('Reading partitionsalarm');
-      this.log(functions.hex2bin(payload));
+      // this.log(functions.hex2bin(payload));
     }
-  }
-
-  /**
-   * onAdded is called when the user adds the device, called just after pairing.
-   */
-  async onAdded() {
-    this.log(`Device ${this.getName()} has been added`);
   }
 
   /**
