@@ -1,10 +1,13 @@
+/* eslint-disable max-len */
+/* eslint-disable eqeqeq */
+
 'use strict';
 
 const Homey = require('homey');
 const eventBus = require('@tuxjs/eventbus');
 const functions = require('../../js/functions');
 
-const debugEnabled = true;
+const debugEnabled = false;
 
 class Device extends Homey.Device {
 
@@ -14,16 +17,52 @@ class Device extends Homey.Device {
   async onInit() {
     this.log(`Zone-Motion: ${this.getName()} initialized ID: ${this.getDeviceId()}`);
 
+    // make array by deviceID on wich devices are initialized and are uses
+    const zonesActiveOnHomey = [];
+    zonesActiveOnHomey.push(this.getDeviceId());
+
     eventBus.publish('zonetatuspolltrue', true);
 
     eventBus.subcribe('zonestatus', payload => {
-      this.log('Reading zonestatus');
+      this.zoneStatus(payload, zonesActiveOnHomey);
     });
   }
 
   getDeviceId() {
     const deviceID = Object.values(this.getData());
     return deviceID[0];
+  }
+
+  async zoneStatus(payload, devicesOnHomey) {
+    payload = payload.slice(1);
+    if (debugEnabled) {
+      this.log('Reading zonestatus');
+    }
+    const activeZonesOutputPartitions = [];
+    let p = 0;
+    for (const plist of payload) {
+      const binarray = Array.from(functions.hex2bin(plist));
+      for (let i = binarray.length - 1; i >= 0; --i) {
+        p++;
+        if (binarray[i] == 1) {
+          activeZonesOutputPartitions.push(p);
+          const arrayMatch = functions.getArrayMatch(activeZonesOutputPartitions, devicesOnHomey);
+          arrayMatch.forEach(zone => {
+            const driver = Homey.ManagerDrivers.getDriver('zonesmotion');
+            const devicNameId = driver.getDevice({ id: zone.toString() });
+            devicNameId.setCapabilityValue('alarm_motion', true);
+          });
+        } else if (binarray[i] == 0) {
+          // need to check only the homey array?
+          const arrayMisMatch = functions.getArrayMisMatch(devicesOnHomey, activeZonesOutputPartitions);
+          arrayMisMatch.forEach(zone => {
+            const driver = Homey.ManagerDrivers.getDriver('zonesmotion');
+            const devicNameId = driver.getDevice({ id: zone.toString() });
+            devicNameId.setCapabilityValue('alarm_motion', false);
+          });
+        }
+      }
+    }
   }
 
   /**

@@ -49,7 +49,7 @@ class integraAlarm extends Homey.App {
 
     eventBus.subcribe('partitionstatuspolltrue', data => {
       if (data) {
-        this.satelSystemPartiotionStatus();
+        this.satelSystemPartitionStatus();
         this.satelSystemPartitionAlarms();
       }
     });
@@ -122,54 +122,51 @@ class integraAlarm extends Homey.App {
     satelSocket.on('data', data => {
       const answer = functions.ETHM1AnswerToArray(data);
       const payload = answer.slice(2, -4);
-      if (debugEnabled) {
-        this.log(' * Received data from alarmpanel...');
+      this.log(' * Received data from alarmpanel...');
 
-        if (functions.verifyAnswer(answer)) {
-          if (debugEnabled) {
-            this.log(`   - valid answer: ${payload}`);
-          }
-        } else if (debugEnabled) {
-          this.log(`   - incorrect answer:${payload}`);
+      if (functions.verifyAnswer(answer)) {
+        if (debugEnabled) {
+          this.log(`   - valid answer: ${payload}`);
         }
-      }
-      switch (payload[0]) {
-        case '7E':
-          this.log('Reading systemtype');
-          this.parsePayloadSystemType(payload);
-          break;
-        case 'EE': // systaemstate
-          if (payload[1] == '00') {
-            // send partiotion info to partitions driver
-            eventBus.publish('partitions', payload);
-          } else if (payload[1] == '01') {
-            // send zones info to all zone drivers
-            eventBus.publish('zones', payload);
-          } else if (payload[1] == '04') {
-            // send output info to output driver
-            eventBus.publish('outputs', payload);
-          }
-          break;
-        case '0A':
-          // send partitionsstatus to partition device
-          eventBus.publish('partitionstatus', payload);
-          break;
-        case '13':
-          // send partitionsalarms to partition device
-          eventBus.publish('partitionalarm', payload);
-          break;
-        case '00':
-          // send zonestatus to all zone devices
-          eventBus.publish('zonestatus', payload);
-          break;
-        case '17':
-          // send outputstatus to output device
-          eventBus.publish('outputtatus', payload);
-          break;
-        default:
-          if (debugEnabled) {
-            this.log('UNKOWN DATA RECEIVED');
-          }
+        switch (payload[0]) {
+          case '7E':
+            this.parsePayloadSystemType(payload);
+            break;
+          case 'EE': // systaemstate
+            if (payload[1] == '00') {
+              // send partiotion info to partitions driver
+              eventBus.publish('partitions', payload);
+            } else if (payload[1] == '01') {
+              // send zones info to all zone drivers
+              eventBus.publish('zones', payload);
+            } else if (payload[1] == '04') {
+              // send output info to output driver
+              eventBus.publish('outputs', payload);
+            }
+            break;
+          case '0A':
+            // send partitionsstatus to partition device
+            eventBus.publish('partitionstatus', payload);
+            break;
+          case '13':
+            // send partitionsalarms to partition device
+            eventBus.publish('partitionalarm', payload);
+            break;
+          case '00':
+            // send zonestatus to all zone devices
+            eventBus.publish('zonestatus', payload);
+            break;
+          case '17':
+            // send outputstatus to output device
+            eventBus.publish('outputtatus', payload);
+            break;
+          default:
+            if (debugEnabled) {
+              this.log('UNKOWN DATA RECEIVED');
+            }
+        }
+      } else if (debugEnabled) {
+        this.log(`   - incorrect answer:${payload}`);
       }
     });
   }
@@ -221,7 +218,7 @@ class integraAlarm extends Homey.App {
         // send command for zone violation
           this.socketSend(functions.createFrameArray(['00']));
           zoneStatusEnable = true;
-        }, 100);
+        }, 300);
       }, 1000);
     }
   }
@@ -231,16 +228,16 @@ class integraAlarm extends Homey.App {
       setTimeout(() => {
         // send command for output status
         this.socketSend(functions.createFrameArray(['17']));
-      }, 500);
+      }, 400);
     }, 1000);
   }
 
-  async satelSystemPartiotionStatus() {
+  async satelSystemPartitionStatus() {
     setInterval(() => {
       setTimeout(() => {
       // send command for partition status
         this.socketSend(functions.createFrameArray(['0A']));
-      }, 100);
+      }, 1000);
     }, 1000);
   }
 
@@ -249,7 +246,7 @@ class integraAlarm extends Homey.App {
       setTimeout(() => {
         // send command for partitionalarmss
         this.socketSend(functions.createFrameArray(['13']));
-      }, 300);
+      }, 900);
     }, 1000);
   }
 
@@ -258,6 +255,7 @@ class integraAlarm extends Homey.App {
     if (!Array.isArray(payload)) {
       return '';
     }
+    this.log('Reading systemtype');
     switch (functions.hex2dec(payload[1])) {
       case 0:
         this.log('type = Integra 24');
