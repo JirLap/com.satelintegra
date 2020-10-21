@@ -8,6 +8,7 @@ const eventBus = require('@tuxjs/eventbus');
 const functions = require('../../js/functions');
 
 const debugEnabled = false;
+const zonesActiveOnHomey = [];
 
 class Device extends Homey.Device {
 
@@ -18,13 +19,12 @@ class Device extends Homey.Device {
     this.log(`Zone-Motion: ${this.getName()} initialized ID: ${this.getDeviceId()}`);
 
     // make array by deviceID on wich devices are initialized and are uses
-    const zonesActiveOnHomey = [];
     zonesActiveOnHomey.push(this.getDeviceId());
 
     eventBus.publish('zonetatuspolltrue', true);
 
     eventBus.subcribe('zonestatus', payload => {
-      this.zoneStatus(payload, zonesActiveOnHomey);
+      this.zoneStatus(payload);
     });
   }
 
@@ -33,34 +33,41 @@ class Device extends Homey.Device {
     return deviceID[0];
   }
 
-  async zoneStatus(payload, devicesOnHomey) {
+  async zoneStatus(payload) {
     payload = payload.slice(1);
     if (debugEnabled) {
       this.log('Reading zonestatus');
     }
-    const activeZonesOutputPartitions = [];
+    // const activeZonesOutputPartitions = [];
     let p = 0;
     for (const plist of payload) {
       const binarray = Array.from(functions.hex2bin(plist));
       for (let i = binarray.length - 1; i >= 0; --i) {
         p++;
+        // this.log(zonesActiveOnHomey);
+        if (zonesActiveOnHomey.indexOf(p) == -1) {
+          // this.log(`SKIPPING: ${p}`);
+          continue;
+        }
+        this.log(`Currently on zone:  ${p}`);
         if (binarray[i] == 1) {
-          activeZonesOutputPartitions.push(p);
-          const arrayMatch = functions.getArrayMatch(activeZonesOutputPartitions, devicesOnHomey);
-          arrayMatch.forEach(zone => {
-            this.log(`Active Zone:  ${arrayMatch}`);
-            const driver = Homey.ManagerDrivers.getDriver('zonesmotion');
-            const devicNameId = driver.getDevice({ id: zone.toString() });
-            devicNameId.setCapabilityValue('alarm_motion', true);
-          });
+          // if P  is in array deviceonhomey then .......
+          // activeZonesOutputPartitions.push(p);
+          // const arrayMatch = functions.getArrayMatch(activeZonesOutputPartitions, devicesOnHomey);
+          // arrayMatch.forEach(zone => {
+          this.log(`Active Zone:  ${p.toString()}`);
+          const driver = Homey.ManagerDrivers.getDriver('zonesmotion');
+          const deviceNameId = driver.getDevice({ id: p.toString() });
+          deviceNameId.setCapabilityValue('alarm_motion', true);
+          //  });
         } else if (binarray[i] == 0) {
-          const result = activeZonesOutputPartitions.filter(item => devicesOnHomey.indexOf(item) == -1);
-          result.forEach(zone => {
-            this.log(`NON Active Zone:  ${zone}`);
-            const driver = Homey.ManagerDrivers.getDriver('zonesmotion');
-            const devicNameId = driver.getDevice({ id: zone.toString() });
-            devicNameId.setCapabilityValue('alarm_motion', false);
-          });
+          // const result = activeZonesOutputPartitions.filter(item => devicesOnHomey.indexOf(item) == -1);
+          // result.forEach(zone => {
+          this.log(`NON Active Zone:  ${p.toString()}`);
+          const driver = Homey.ManagerDrivers.getDriver('zonesmotion');
+          const deviceNameId = driver.getDevice({ id: p.toString() });
+          deviceNameId.setCapabilityValue('alarm_motion', false);
+          // });
         }
       }
     }

@@ -33,7 +33,7 @@
       "name": {
         "en": "Outputs"
       },
-      "class": "homealarm",
+      "class": "button",
       "capabilities": [
         "onoff"
       ],
@@ -82,7 +82,7 @@
       "name": {
         "en": "Zones Contact"
       },
-      "class": "homealarm",
+      "class": "sensor",
       "capabilities": [
         "alarm_contact"
       ],
@@ -106,7 +106,7 @@
       "name": {
         "en": "Zones Fire"
       },
-      "class": "homealarm",
+      "class": "sensor",
       "capabilities": [
         "alarm_fire"
       ],
