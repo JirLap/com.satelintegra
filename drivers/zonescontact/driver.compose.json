@@ -3,7 +3,7 @@
   "name": {
     "en": "Zones Contact"
   },
-  "class": "homealarm",
+  "class": "sensor",
   "capabilities": [
     "alarm_contact"
   ],

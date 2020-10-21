@@ -3,7 +3,7 @@
   "name": {
     "en": "Zones Fire"
   },
-  "class": "homealarm",
+  "class": "sensor",
   "capabilities": [
     "alarm_fire"
   ],

@@ -3,7 +3,7 @@
   "name": {
     "en": "Outputs"
   },
-  "class": "homealarm",
+  "class": "button",
   "capabilities": [
     "onoff"
   ],

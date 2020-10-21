@@ -3,7 +3,7 @@
   "name": {
     "en": "Zones Motion"
   },
-  "class": "homealarm",
+  "class": "sensor",
   "capabilities": [
     "alarm_motion"
   ],

@@ -48,14 +48,15 @@ class Device extends Homey.Device {
           activeZonesOutputPartitions.push(p);
           const arrayMatch = functions.getArrayMatch(activeZonesOutputPartitions, devicesOnHomey);
           arrayMatch.forEach(zone => {
+            this.log(`Active Zone:  ${arrayMatch}`);
             const driver = Homey.ManagerDrivers.getDriver('zonesmotion');
             const devicNameId = driver.getDevice({ id: zone.toString() });
             devicNameId.setCapabilityValue('alarm_motion', true);
           });
         } else if (binarray[i] == 0) {
-          // need to check only the homey array?
-          const arrayMisMatch = functions.getArrayMisMatch(devicesOnHomey, activeZonesOutputPartitions);
-          arrayMisMatch.forEach(zone => {
+          const result = activeZonesOutputPartitions.filter(item => devicesOnHomey.indexOf(item) == -1);
+          result.forEach(zone => {
+            this.log(`NON Active Zone:  ${zone}`);
             const driver = Homey.ManagerDrivers.getDriver('zonesmotion');
             const devicNameId = driver.getDevice({ id: zone.toString() });
             devicNameId.setCapabilityValue('alarm_motion', false);

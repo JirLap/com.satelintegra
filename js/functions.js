@@ -147,6 +147,23 @@ function getArrayMisMatch(a1, a2) {
   }
   return diff;
 }
+
+// compare two array to check if they have the same elements
+function compareArrays(arrA, arrB) {
+  // check if lengths are different
+  // if (arrA.length !== arrB.length) return false;
+
+  // slice so we do not effect the orginal
+  // sort makes sure they are in order
+  const cA = arrA.slice().sort();
+  const cB = arrB.slice().sort();
+
+  for (let i = 0; i < cA.length; i++) {
+    if (cA[i] !== cB[i]) return false;
+  }
+  return true;
+} // compareArrays
+
 module.exports = {
-  hex2a, dec2hex4Digit, dec2hex2Digit, hex2dec, hex2bin, byteArrayToDec, stringToHexBytes, calcCRC, ETHM1AnswerToArray, partitionListToByteArray, verifyAnswer, createFrameArray, getArrayMatch, getArrayMisMatch,
+  hex2a, dec2hex4Digit, dec2hex2Digit, hex2dec, hex2bin, byteArrayToDec, stringToHexBytes, calcCRC, ETHM1AnswerToArray, partitionListToByteArray, verifyAnswer, createFrameArray, getArrayMatch, getArrayMisMatch, compareArrays,
 };
