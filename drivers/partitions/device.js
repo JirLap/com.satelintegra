@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable eqeqeq */
 
 'use strict';
@@ -6,7 +7,7 @@ const Homey = require('homey');
 const eventBus = require('@tuxjs/eventbus');
 const functions = require('../../js/functions');
 
-const debugEnabled = true;
+let partitionsActiveOnHomey = [];
 
 class Device extends Homey.Device {
 
@@ -15,6 +16,9 @@ class Device extends Homey.Device {
    */
   async onInit() {
     this.log(`Partition: ${this.getName()} initialized ID: ${this.getDeviceId()}`);
+
+    // make array by deviceID on wich devices are initialized and are uses
+    partitionsActiveOnHomey.push(this.getDeviceId());
 
     eventBus.publish('partitionstatuspolltrue', true);
 
@@ -25,7 +29,7 @@ class Device extends Homey.Device {
 
     // incoming partitionsalarm
     eventBus.subcribe('partitionalarm', payload => {
-      // this.partitionAlarms(payload);
+      this.partitionAlarms(payload);
     });
   }
 
@@ -35,29 +39,48 @@ class Device extends Homey.Device {
   }
 
   async partitionStatus(payload) {
+    const driver = Homey.ManagerDrivers.getDriver('partitions');
     payload = payload.slice(1);
-    if (debugEnabled) {
-      this.log('Reading partitionsstatus');
-    }
-    const activepartitions = [];
-    let p = 0;
-    for (const plist of payload) {
-      const binarray = Array.from(functions.hex2bin(plist));
+    let partId = 0;
+    for (const list of payload) {
+      const binarray = Array.from(functions.hex2bin(list));
       for (let i = binarray.length - 1; i >= 0; --i) {
-        p++;
+        partId++;
+        if (partitionsActiveOnHomey.indexOf(partId.toString()) === -1) {
+          continue;
+        }
         if (binarray[i] == 1) {
-          activepartitions.push(p);
-          this.log(` - active partitions (now)   : ${activepartitions}`);
+          this.log(`Active partition:  ${partId}`);
+          const deviceNameId = driver.getDevice({ id: partId.toString() });
+          deviceNameId.setCapabilityValue('onoff', true);
+        } else {
+          const deviceNameId = driver.getDevice({ id: partId.toString() });
+          deviceNameId.setCapabilityValue('onoff', false);
         }
       }
     }
   }
 
   async partitionAlarms(payload) {
+    const driver = Homey.ManagerDrivers.getDriver('partitions');
     payload = payload.slice(1);
-    if (debugEnabled) {
-      this.log('Reading partitionsalarm');
-      // this.log(functions.hex2bin(payload));
+    let partId = 0;
+    for (const list of payload) {
+      const binarray = Array.from(functions.hex2bin(list));
+      for (let i = binarray.length - 1; i >= 0; --i) {
+        partId++;
+        if (partitionsActiveOnHomey.indexOf(partId.toString()) === -1) {
+          continue;
+        }
+        if (binarray[i] == 1) {
+          this.log(`Active Partition alarm:  ${partId}`);
+          const deviceNameId = driver.getDevice({ id: partId.toString() });
+          deviceNameId.setCapabilityValue('alarm_generic', true);
+        } else {
+          const deviceNameId = driver.getDevice({ id: partId.toString() });
+          deviceNameId.setCapabilityValue('alarm_generic', false);
+        }
+      }
     }
   }
 
@@ -78,6 +101,7 @@ class Device extends Homey.Device {
    */
   async onDeleted() {
     this.log(`Device ${this.getName()} has been deleted`);
+    partitionsActiveOnHomey = partitionsActiveOnHomey.filter(partId => partId !== this.getDeviceId());
   }
 
 }
