@@ -185,7 +185,7 @@ class integraAlarm extends Homey.App {
                 this.log(`Reading partitionnumber : ${totalPartitionsCount}`);
               }
               this.socketSend(functions.createFrameArray(['EE', '00', `${functions.dec2hex2Digit(totalPartitionsCount)}`]));
-            }, totalPartitionsCount * 200);
+            }, totalPartitionsCount * 100);
           }
 
           for (let totalOutputCount = 1; totalOutputCount <= totalZoneOutputPartitions[1]; totalOutputCount++) {
@@ -195,7 +195,7 @@ class integraAlarm extends Homey.App {
                 this.log(`Reading outputnumber : ${totalOutputCount}`);
               }
               this.socketSend(functions.createFrameArray(['EE', '04', `${functions.dec2hex2Digit(totalOutputCount)}`]));
-            }, totalOutputCount * 210);
+            }, totalOutputCount * 150);
           }
           for (let totalZonesCount = 1; totalZonesCount <= totalZoneOutputPartitions[0]; totalZonesCount++) {
             setTimeout(() => {
@@ -204,10 +204,10 @@ class integraAlarm extends Homey.App {
                 this.log(`Reading zones : ${totalZonesCount}`);
               }
               this.socketSend(functions.createFrameArray(['EE', '01', `${functions.dec2hex2Digit(totalZonesCount)}`]));
-            }, totalZonesCount * 217);
+            }, totalZonesCount * 200);
           }
         }
-      }, 1200);
+      }, 3000);
     }
   }
 
@@ -218,7 +218,7 @@ class integraAlarm extends Homey.App {
         // send command for zone violation
           this.socketSend(functions.createFrameArray(['00']));
           zoneStatusEnable = true;
-        }, 300);
+        }, 1000);
       }, 1000);
     }
   }
@@ -228,7 +228,7 @@ class integraAlarm extends Homey.App {
       setTimeout(() => {
         // send command for output status
         this.socketSend(functions.createFrameArray(['17']));
-      }, 400);
+      }, 1100);
     }, 1000);
   }
 
@@ -237,7 +237,7 @@ class integraAlarm extends Homey.App {
       setTimeout(() => {
       // send command for partition status
         this.socketSend(functions.createFrameArray(['0A']));
-      }, 1000);
+      }, 1150);
     }, 1000);
   }
 
@@ -246,7 +246,7 @@ class integraAlarm extends Homey.App {
       setTimeout(() => {
         // send command for partitionalarmss
         this.socketSend(functions.createFrameArray(['13']));
-      }, 900);
+      }, 1050);
     }, 1000);
   }
 
@@ -264,8 +264,7 @@ class integraAlarm extends Homey.App {
         break;
       case 1:
         this.log('type = Integra 32');
-        totalZoneOutputPartitions = ['16', '6', '3'];
-        // totalZoneOutputPartitions = ['32', '32', '16'];
+        totalZoneOutputPartitions = ['32', '32', '16'];
         alarmIdentified = true;
         break;
       case 2:
