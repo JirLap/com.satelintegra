@@ -8,7 +8,7 @@
 'use strict';
 
 function hex2a(data) {
-  const hex = data.toString().replace(/,/g, '');// force conversion and remove comma's
+  const hex = data.toString().replace(/,/g, '');
   let str = '';
   for (let i = 0; (i < hex.length && hex.substr(i, 2) !== '00'); i += 2) str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
   return str;
@@ -119,51 +119,6 @@ function createFrameArray(cmd) {
   return frmHdr.concat(cmd).concat(crc).concat(frmFtr);
 } // createFrameArray
 
-function getArrayMatch(a, b) {
-  const matches = [];
-
-  for (let i = 0; i < a.length; i++) {
-    for (let e = 0; e < b.length; e++) {
-      if (a[i] == b[e]) matches.push(a[i]);
-    }
-  }
-  return matches;
-}
-function getArrayMisMatch(a1, a2) {
-  const a = [];
-  const diff = [];
-  for (let i = 0; i < a1.length; i++) {
-    a[a1[i]] = true;
-  }
-  for (let i = 0; i < a2.length; i++) {
-    if (a[a2[i]]) {
-      delete a[a2[i]];
-    } else {
-      a[a2[i]] = true;
-    }
-  }
-  for (const k in a) {
-    diff.push(k);
-  }
-  return diff;
-}
-
-// compare two array to check if they have the same elements
-function compareArrays(arrA, arrB) {
-  // check if lengths are different
-  // if (arrA.length !== arrB.length) return false;
-
-  // slice so we do not effect the orginal
-  // sort makes sure they are in order
-  const cA = arrA.slice().sort();
-  const cB = arrB.slice().sort();
-
-  for (let i = 0; i < cA.length; i++) {
-    if (cA[i] !== cB[i]) return false;
-  }
-  return true;
-} // compareArrays
-
 module.exports = {
-  hex2a, dec2hex4Digit, dec2hex2Digit, hex2dec, hex2bin, byteArrayToDec, stringToHexBytes, calcCRC, ETHM1AnswerToArray, partitionListToByteArray, verifyAnswer, createFrameArray, getArrayMatch, getArrayMisMatch, compareArrays,
+  hex2a, dec2hex4Digit, dec2hex2Digit, hex2dec, hex2bin, byteArrayToDec, stringToHexBytes, calcCRC, ETHM1AnswerToArray, partitionListToByteArray, verifyAnswer, createFrameArray,
 };

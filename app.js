@@ -35,7 +35,7 @@ class integraAlarm extends Homey.App {
     this.socketConnectorPoll();
 
     // If devices are init start statuspolling
-    eventBus.subcribe('zonetatuspolltrue', data => {
+    eventBus.subcribe('zonestatuspolltrue', data => {
       if (data) {
         this.satelSystemZoneStatus();
       }
@@ -195,7 +195,7 @@ class integraAlarm extends Homey.App {
                 this.log(`Reading outputnumber : ${totalOutputCount}`);
               }
               this.socketSend(functions.createFrameArray(['EE', '04', `${functions.dec2hex2Digit(totalOutputCount)}`]));
-            }, totalOutputCount * 200);
+            }, totalOutputCount * 210);
           }
           for (let totalZonesCount = 1; totalZonesCount <= totalZoneOutputPartitions[0]; totalZonesCount++) {
             setTimeout(() => {
@@ -204,10 +204,10 @@ class integraAlarm extends Homey.App {
                 this.log(`Reading zones : ${totalZonesCount}`);
               }
               this.socketSend(functions.createFrameArray(['EE', '01', `${functions.dec2hex2Digit(totalZonesCount)}`]));
-            }, totalZonesCount * 200);
+            }, totalZonesCount * 217);
           }
         }
-      }, 1000);
+      }, 1200);
     }
   }
 

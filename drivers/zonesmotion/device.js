@@ -7,8 +7,7 @@ const Homey = require('homey');
 const eventBus = require('@tuxjs/eventbus');
 const functions = require('../../js/functions');
 
-const debugEnabled = false;
-const zonesActiveOnHomey = [];
+let zonesActiveOnHomey = [];
 
 class Device extends Homey.Device {
 
@@ -21,7 +20,7 @@ class Device extends Homey.Device {
     // make array by deviceID on wich devices are initialized and are uses
     zonesActiveOnHomey.push(this.getDeviceId());
 
-    eventBus.publish('zonetatuspolltrue', true);
+    eventBus.publish('zonestatuspolltrue', true);
 
     eventBus.subcribe('zonestatus', payload => {
       this.zoneStatus(payload);
@@ -34,50 +33,26 @@ class Device extends Homey.Device {
   }
 
   async zoneStatus(payload) {
+    const driver = Homey.ManagerDrivers.getDriver('zonesmotion');
     payload = payload.slice(1);
-    if (debugEnabled) {
-      this.log('Reading zonestatus');
-    }
-    // const activeZonesOutputPartitions = [];
-    let p = 0;
-    for (const plist of payload) {
-      const binarray = Array.from(functions.hex2bin(plist));
+    let zoneId = 0;
+    for (const list of payload) {
+      const binarray = Array.from(functions.hex2bin(list));
       for (let i = binarray.length - 1; i >= 0; --i) {
-        p++;
-        // this.log(zonesActiveOnHomey);
-        if (zonesActiveOnHomey.indexOf(p) == -1) {
-          // this.log(`SKIPPING: ${p}`);
+        zoneId++;
+        if (zonesActiveOnHomey.indexOf(zoneId.toString()) === -1) {
           continue;
         }
-        this.log(`Currently on zone:  ${p}`);
         if (binarray[i] == 1) {
-          // if P  is in array deviceonhomey then .......
-          // activeZonesOutputPartitions.push(p);
-          // const arrayMatch = functions.getArrayMatch(activeZonesOutputPartitions, devicesOnHomey);
-          // arrayMatch.forEach(zone => {
-          this.log(`Active Zone:  ${p.toString()}`);
-          const driver = Homey.ManagerDrivers.getDriver('zonesmotion');
-          const deviceNameId = driver.getDevice({ id: p.toString() });
+          this.log(`Active Zone:  ${zoneId}`);
+          const deviceNameId = driver.getDevice({ id: zoneId.toString() });
           deviceNameId.setCapabilityValue('alarm_motion', true);
-          //  });
-        } else if (binarray[i] == 0) {
-          // const result = activeZonesOutputPartitions.filter(item => devicesOnHomey.indexOf(item) == -1);
-          // result.forEach(zone => {
-          this.log(`NON Active Zone:  ${p.toString()}`);
-          const driver = Homey.ManagerDrivers.getDriver('zonesmotion');
-          const deviceNameId = driver.getDevice({ id: p.toString() });
+        } else {
+          const deviceNameId = driver.getDevice({ id: zoneId.toString() });
           deviceNameId.setCapabilityValue('alarm_motion', false);
-          // });
         }
       }
     }
-  }
-
-  /**
-   * onAdded is called when the user adds the device, called just after pairing.
-   */
-  async onAdded() {
-    this.log(`Device ${this.getName()} has been added`);
   }
 
   /**
@@ -97,6 +72,7 @@ class Device extends Homey.Device {
    */
   async onDeleted() {
     this.log(`Device ${this.getName()} has been deleted`);
+    zonesActiveOnHomey = zonesActiveOnHomey.filter(zoneId => zoneId !== this.getDeviceId());
   }
 
 }

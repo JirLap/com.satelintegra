@@ -1,10 +1,13 @@
+/* eslint-disable max-len */
+/* eslint-disable eqeqeq */
+
 'use strict';
 
 const Homey = require('homey');
 const eventBus = require('@tuxjs/eventbus');
 const functions = require('../../js/functions');
 
-const debugEnabled = true;
+let zonesActiveOnHomey = [];
 
 class Device extends Homey.Device {
 
@@ -12,12 +15,15 @@ class Device extends Homey.Device {
    * onInit is called when the device is initialized.
    */
   async onInit() {
-    this.log(`Zone-Contact: ${this.getName()} initialized ID: ${this.getDeviceId()}`);
+    this.log(`Zone-contact: ${this.getName()} initialized ID: ${this.getDeviceId()}`);
 
-    eventBus.publish('zonetatuspolltrue', true);
+    // make array by deviceID on wich devices are initialized and are uses
+    zonesActiveOnHomey.push(this.getDeviceId());
+
+    eventBus.publish('zonestatuspolltrue', true);
 
     eventBus.subcribe('zonestatus', payload => {
-      this.log('Reading zonestatus');
+      this.zoneStatus(payload);
     });
   }
 
@@ -26,11 +32,27 @@ class Device extends Homey.Device {
     return deviceID[0];
   }
 
-  /**
-   * onAdded is called when the user adds the device, called just after pairing.
-   */
-  async onAdded() {
-    this.log(`Device ${this.getName()} has been added`);
+  async zoneStatus(payload) {
+    const driver = Homey.ManagerDrivers.getDriver('zonescontact');
+    payload = payload.slice(1);
+    let zoneId = 0;
+    for (const list of payload) {
+      const binarray = Array.from(functions.hex2bin(list));
+      for (let i = binarray.length - 1; i >= 0; --i) {
+        zoneId++;
+        if (zonesActiveOnHomey.indexOf(zoneId.toString()) === -1) {
+          continue;
+        }
+        if (binarray[i] == 1) {
+          this.log(`Active Zone:  ${zoneId}`);
+          const deviceNameId = driver.getDevice({ id: zoneId.toString() });
+          deviceNameId.setCapabilityValue('alarm_contact', true);
+        } else {
+          const deviceNameId = driver.getDevice({ id: zoneId.toString() });
+          deviceNameId.setCapabilityValue('alarm_contact', false);
+        }
+      }
+    }
   }
 
   /**
@@ -50,6 +72,7 @@ class Device extends Homey.Device {
    */
   async onDeleted() {
     this.log(`Device ${this.getName()} has been deleted`);
+    zonesActiveOnHomey = zonesActiveOnHomey.filter(zoneId => zoneId !== this.getDeviceId());
   }
 
 }
