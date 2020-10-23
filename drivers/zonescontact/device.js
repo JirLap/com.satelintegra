@@ -22,6 +22,7 @@ class Device extends Homey.Device {
 
     eventBus.publish('zonestatuspolltrue', true);
 
+    // incoming zonestatus
     eventBus.subcribe('zonestatus', payload => {
       this.zoneStatus(payload);
     });

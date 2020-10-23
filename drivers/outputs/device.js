@@ -22,6 +22,7 @@ class Device extends Homey.Device {
 
     eventBus.publish('outputstatuspolltrue', true);
 
+    // incoming outputstatus
     eventBus.subcribe('outputtatus', payload => {
       this.outputStatus(payload);
     });

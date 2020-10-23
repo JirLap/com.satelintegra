@@ -54,10 +54,12 @@ class integraAlarm extends Homey.App {
       }
     });
 
+    // Incoming data when devices are turned on/off
     eventBus.subcribe('satelSend', input => {
       this.socketSend(input);
     });
 
+    // when settings are changed reset the socket
     Homey.ManagerSettings.on('set', data => {
       this.log('Settings are changed');
       satelSocket.destroy();
@@ -70,6 +72,7 @@ class integraAlarm extends Homey.App {
     });
   }
 
+  // socket poller/reconnect
   async socketConnectorPoll() {
     setInterval(() => {
       if (!SatelSocketConnectionAlive) {
@@ -184,7 +187,7 @@ class integraAlarm extends Homey.App {
         if (alarmIdentified) {
           for (let totalPartitionsCount = 1; totalPartitionsCount <= totalZoneOutputPartitions[2]; totalPartitionsCount++) {
             setTimeout(() => {
-              // send commands for partitions
+              // send commands for readout partitions
               if (debugEnabled) {
                 this.log(`Reading partitionnumber : ${totalPartitionsCount}`);
               }
@@ -194,7 +197,7 @@ class integraAlarm extends Homey.App {
 
           for (let totalOutputCount = 1; totalOutputCount <= totalZoneOutputPartitions[1]; totalOutputCount++) {
             setTimeout(() => {
-              // send commands for outputs
+              // send commands for readout outputs
               if (debugEnabled) {
                 this.log(`Reading outputnumber : ${totalOutputCount}`);
               }
@@ -203,7 +206,7 @@ class integraAlarm extends Homey.App {
           }
           for (let totalZonesCount = 1; totalZonesCount <= totalZoneOutputPartitions[0]; totalZonesCount++) {
             setTimeout(() => {
-              // send commands for zones
+              // send commands for readout zones
               if (debugEnabled) {
                 this.log(`Reading zones : ${totalZonesCount}`);
               }
@@ -215,6 +218,7 @@ class integraAlarm extends Homey.App {
     }
   }
 
+  // socket poller for zonestatus
   async satelSystemZoneStatus() {
     if (!zoneStatusEnable) {
       setInterval(() => {
@@ -227,6 +231,7 @@ class integraAlarm extends Homey.App {
     }
   }
 
+  // socket poller for outputstatus
   async satelSystemOuputstatus() {
     setInterval(() => {
       setTimeout(() => {
@@ -236,6 +241,7 @@ class integraAlarm extends Homey.App {
     }, 1000);
   }
 
+  // socket poller for partitionstatus
   async satelSystemPartitionStatus() {
     setInterval(() => {
       setTimeout(() => {
@@ -245,6 +251,7 @@ class integraAlarm extends Homey.App {
     }, 1000);
   }
 
+  // socket poller for partitionalarms
   async satelSystemPartitionAlarms() {
     setInterval(() => {
       setTimeout(() => {
