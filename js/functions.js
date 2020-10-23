@@ -109,6 +109,27 @@ function partitionListToByteArray(partitions, size = 4) {
   return partHexList;
 } // partitionListToByteArray
 
+function outputListToByteArray(output, size = 16) {
+  const ary = output.toString().split(',');
+  const byteArray = [];
+  for (let i = 0; i < (8 * size); i++) {
+    // if index+1 equals partition number, set as 1.
+    if (ary.includes((i + 1).toString())) {
+      byteArray[i] = 1;
+    } else {
+      byteArray[i] = 0;
+    }
+  }
+  // split into sections of 8 characters
+  const byteList = byteArray.reverse().join('').match(/.{8}/g);
+  const partHexList = [];
+  for (const b of byteList.reverse()) {
+    // convert bin to hex, uppercase and pad left
+    partHexList.push(parseInt(b, 2).toString(16).toUpperCase().padStart(2, '0'));
+  }
+  return partHexList;
+} // outputListToByteArray
+
 function createFrameArray(cmd) {
   // cmd must be array
   // Frame structure
@@ -120,5 +141,5 @@ function createFrameArray(cmd) {
 } // createFrameArray
 
 module.exports = {
-  hex2a, dec2hex4Digit, dec2hex2Digit, hex2dec, hex2bin, byteArrayToDec, stringToHexBytes, calcCRC, ETHM1AnswerToArray, partitionListToByteArray, verifyAnswer, createFrameArray,
+  hex2a, dec2hex4Digit, dec2hex2Digit, hex2dec, hex2bin, byteArrayToDec, stringToHexBytes, calcCRC, ETHM1AnswerToArray, partitionListToByteArray, verifyAnswer, createFrameArray, outputListToByteArray,
 };

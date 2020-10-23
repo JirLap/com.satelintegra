@@ -25,6 +25,28 @@ class Device extends Homey.Device {
     eventBus.subcribe('outputtatus', payload => {
       this.outputStatus(payload);
     });
+
+    this.registerCapabilityListener('onoff', this.onCapabilityOnoff.bind(this));
+  }
+
+  async onCapabilityOnoff(value, opts) {
+    if (value == true) {
+      this.log(`Output ON : ${this.getDeviceId()}`);
+      eventBus.publish('satelSend', this.outputAction('88', this.getDeviceId()));
+    } else {
+      eventBus.publish('satelSend', this.outputAction('89', this.getDeviceId()));
+    }
+  }
+
+  outputAction(mode, deviceID) {
+    let ary = [];
+    // first byte is command code ()
+    ary.push(mode);
+    // next 8 bytes are usercode
+    ary = ary.concat(functions.stringToHexBytes(Homey.ManagerSettings.get('alarmcode'), 8, 'F'));
+    // next 16 bytes are zones to arm
+    ary = ary.concat(functions.outputListToByteArray(deviceID));
+    return functions.createFrameArray(ary);
   }
 
   getDeviceId() {
@@ -44,7 +66,7 @@ class Device extends Homey.Device {
           continue;
         }
         if (binarray[i] == 1) {
-          this.log(`Active partition:  ${outputId}`);
+          this.log(`Active output:  ${outputId}`);
           const deviceNameId = driver.getDevice({ id: outputId.toString() });
           deviceNameId.setCapabilityValue('onoff', true);
         } else {

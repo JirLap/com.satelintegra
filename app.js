@@ -54,6 +54,10 @@ class integraAlarm extends Homey.App {
       }
     });
 
+    eventBus.subcribe('satelSend', input => {
+      this.socketSend(input);
+    });
+
     Homey.ManagerSettings.on('set', data => {
       this.log('Settings are changed');
       satelSocket.destroy();
@@ -122,7 +126,7 @@ class integraAlarm extends Homey.App {
     satelSocket.on('data', data => {
       const answer = functions.ETHM1AnswerToArray(data);
       const payload = answer.slice(2, -4);
-      this.log(' * Received data from alarmpanel...');
+      // this.log(' * Received data from alarmpanel...');
 
       if (functions.verifyAnswer(answer)) {
         if (debugEnabled) {

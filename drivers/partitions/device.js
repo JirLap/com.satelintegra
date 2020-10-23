@@ -31,6 +31,28 @@ class Device extends Homey.Device {
     eventBus.subcribe('partitionalarm', payload => {
       this.partitionAlarms(payload);
     });
+
+    this.registerCapabilityListener('homealarm_state', this.onCapabilityOnoff.bind(this));
+  }
+
+  async onCapabilityOnoff(value, opts) {
+    if (value == 'armed') {
+      this.log(`ARM Partition : ${this.getDeviceId()}`);
+      eventBus.publish('satelSend', this.armDisAction('80', this.getDeviceId()));
+    } else {
+      eventBus.publish('satelSend', this.armDisAction('84', this.getDeviceId()));
+    }
+  }
+
+  armDisAction(mode, deviceID) {
+    let ary = [];
+    // first byte is command code ()
+    ary.push(mode);
+    // next 8 bytes are usercode
+    ary = ary.concat(functions.stringToHexBytes(Homey.ManagerSettings.get('alarmcode'), 8, 'F'));
+    // next 4 bytes are zones to arm
+    ary = ary.concat(functions.partitionListToByteArray(deviceID));
+    return functions.createFrameArray(ary);
   }
 
   getDeviceId() {
@@ -52,10 +74,10 @@ class Device extends Homey.Device {
         if (binarray[i] == 1) {
           this.log(`Active partition:  ${partId}`);
           const deviceNameId = driver.getDevice({ id: partId.toString() });
-          deviceNameId.setCapabilityValue('onoff', true);
+          deviceNameId.setCapabilityValue('homealarm_state', 'armed');
         } else {
           const deviceNameId = driver.getDevice({ id: partId.toString() });
-          deviceNameId.setCapabilityValue('onoff', false);
+          deviceNameId.setCapabilityValue('homealarm_state', 'disarmed');
         }
       }
     }

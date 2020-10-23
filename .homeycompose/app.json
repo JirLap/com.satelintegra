@@ -25,5 +25,14 @@
   "author": {
     "name": "Mickel Luiten",
     "email": "mickelluiten@gmail.com"
+  },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Mickel Luiten",
+        "email": "mickelluiten@gmail.com"
+      }
+    ]
   }
+  
 }

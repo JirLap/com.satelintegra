@@ -27,13 +27,21 @@
     "name": "Mickel Luiten",
     "email": "mickelluiten@gmail.com"
   },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Mickel Luiten",
+        "email": "mickelluiten@gmail.com"
+      }
+    ]
+  },
   "drivers": [
     {
       "id": "outputs",
       "name": {
         "en": "Outputs"
       },
-      "class": "button",
+      "class": "sensor",
       "capabilities": [
         "onoff"
       ],
@@ -59,7 +67,7 @@
       },
       "class": "sensor",
       "capabilities": [
-        "onoff",
+        "homealarm_state",
         "alarm_generic"
       ],
       "icon": "/drivers/partitions/assets/icon.svg",
@@ -149,5 +157,30 @@
         }
       ]
     }
-  ]
+  ],
+  "capabilities": {
+    "homealarm_state": {
+      "type": "enum",
+      "title": {
+        "en": "Home Alarm state"
+      },
+      "getable": true,
+      "setable": true,
+      "uiComponent": "picker",
+      "values": [
+        {
+          "id": "armed",
+          "title": {
+            "en": "Armed"
+          }
+        },
+        {
+          "id": "disarmed",
+          "title": {
+            "en": "Disarmed"
+          }
+        }
+      ]
+    }
+  }
 }

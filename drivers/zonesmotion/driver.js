@@ -36,7 +36,6 @@ class satelZonesMotionDriver extends Homey.Driver {
         data: {
           id: `${functions.hex2dec(payload[2])}`,
         },
-        capabilities: ['alarm_motion'],
         icon: 'icon.svg',
       };
       devices.push(device);

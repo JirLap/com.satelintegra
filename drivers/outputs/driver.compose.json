@@ -3,7 +3,7 @@
   "name": {
     "en": "Outputs"
   },
-  "class": "button",
+  "class": "sensor",
   "capabilities": [
     "onoff"
   ],
