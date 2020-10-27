@@ -1,87 +1,34 @@
 {
-"triggers": [
-    {
-      "id": "homealarm_state_changed",
-      "title": {
-        "en": "The state changed"
-      },
-      "args": [
-        {
-          "name": "state",
-          "type": "dropdown",
-          "values": [
-            {
-              "id": "armed",
-              "title": {
-                "en": "Armed"
-              }
-            },
-            {
-              "id": "disarmed",
-              "title": {
-                "en": "Disarmed"
-              }
-            }
-          ]
-        }
-      ]
+  "triggers": [{
+    "id": "triggerGotArmed",
+    "title": {
+        "en": "Alarm was armed"
     }
-   ],
-   "conditions": [
-    {
-      "id": "homealarm_state_is",
-      "title": {
-        "en": "The state is !{{|not}}"
-      },
-      "args": [
-        {
-          "name": "state",
-          "type": "dropdown",
-          "values": [
-            {
-              "id": "armed",
-              "title": {
-                "en": "Armed"
-              }
-            },
-            {
-              "id": "disarmed",
-              "title": {
-                "en": "Disarmed"
-              }
-            }
-          ]
-        }
-      ]
+},
+{
+    "id": "triggerGotDisarmed",
+    "title": {
+        "en": "Alarm was disarmed"
     }
-  ],
-
-  "actions": [
-    {
-      "id": "set_homealarm_state",
-      "title": {
-        "en": "Set state"
-      },
-      "args": [
-        {
-          "name": "state",
-          "type": "dropdown",
-          "values": [
-            {
-              "id": "armed",
-              "title": {
-                "en": "Armed"
-              }
-            },
-            {
-              "id": "disarmed",
-              "title": {
-                "en": "Disarmed"
-              }
-            }
-          ]
-        }
-      ]
+}
+],
+"conditions": [{
+"id": "conditionIsArmed",
+"title": {
+    "en": "Alarm !{{is|isn't}} armed"
+}
+}],
+"actions": [{
+    "id": "actionArmAlarm",
+    "title": {
+        "en": "Arm alarm"
     }
-  ]
+},
+{
+    "id": "actionDisarmAlarm",
+    "title": {
+        "en": "Disarm alarm"
+    }
+}
+]
 }

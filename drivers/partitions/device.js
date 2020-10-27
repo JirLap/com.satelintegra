@@ -42,6 +42,45 @@ class Device extends Homey.Device {
     } else {
       eventBus.publish('satelSend', this.armDisAction('84', this.getDeviceId()));
     }
+
+    // register listener for ACTION "disarm" FlowCard
+    new Homey.FlowCardAction('actionDisarmAlarm')
+      .register()
+      .registerRunListener(() => {
+        this.log(' DIS-ARMING ALARM...');
+        return Promise.resolve(true);
+      });
+
+    // register listener for ACTION "arm" FlowCard
+    new Homey.FlowCardAction('actionArmAlarm')
+      .register()
+      .registerRunListener(() => {
+        this.log('ARMING ALARM...');
+        return Promise.resolve(true);
+      });
+
+    // register listener for CONDITION "conditionIsArmed"
+    new Homey.FlowCardCondition('conditionIsArmed')
+      .register()
+      .registerRunListener(() => {
+        return Promise.resolve(true);
+      });
+
+    // register listener for TRIGGER "triggerGotArmed"
+    this.triggerGotArmed = new Homey.FlowCardTrigger('triggerGotArmed');
+    this.triggerGotArmed
+      .registerRunListener(() => {
+      // If true, this flow should run
+        return Promise.resolve(true);
+      }).register();
+
+    // register listener for TRIGGER "triggerGotDisarmed"
+    this.triggerGotDisarmed = new Homey.FlowCardTrigger('triggerGotDisarmed');
+    this.triggerGotDisarmed
+      .registerRunListener(() => {
+      // If true, this flow should run
+        return Promise.resolve(true);
+      }).register();
   }
 
   armDisAction(mode, deviceID) {
@@ -75,6 +114,7 @@ class Device extends Homey.Device {
           this.log(`Active partition:  ${partId}`);
           const deviceNameId = driver.getDevice({ id: partId.toString() });
           deviceNameId.setCapabilityValue('homealarm_state', 'armed');
+          // this.triggerGotArmed.trigger().then().catch();
         } else {
           const deviceNameId = driver.getDevice({ id: partId.toString() });
           deviceNameId.setCapabilityValue('homealarm_state', 'disarmed');

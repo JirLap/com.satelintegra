@@ -161,99 +161,71 @@
   "flow": {
     "triggers": [
       {
-        "id": "homealarm_state_changed",
+        "id": "triggerGotArmed",
         "title": {
-          "en": "The state changed"
+          "en": "Alarm was armed"
         },
         "args": [
           {
             "type": "device",
             "name": "device",
             "filter": "driver_id=partitions"
-          },
+          }
+        ]
+      },
+      {
+        "id": "triggerGotDisarmed",
+        "title": {
+          "en": "Alarm was disarmed"
+        },
+        "args": [
           {
-            "name": "state",
-            "type": "dropdown",
-            "values": [
-              {
-                "id": "armed",
-                "title": {
-                  "en": "Armed"
-                }
-              },
-              {
-                "id": "disarmed",
-                "title": {
-                  "en": "Disarmed"
-                }
-              }
-            ]
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=partitions"
           }
         ]
       }
     ],
     "conditions": [
       {
-        "id": "homealarm_state_is",
+        "id": "conditionIsArmed",
         "title": {
-          "en": "The state is !{{|not}}"
+          "en": "Alarm !{{is|isn't}} armed"
         },
         "args": [
           {
             "type": "device",
             "name": "device",
             "filter": "driver_id=partitions"
-          },
-          {
-            "name": "state",
-            "type": "dropdown",
-            "values": [
-              {
-                "id": "armed",
-                "title": {
-                  "en": "Armed"
-                }
-              },
-              {
-                "id": "disarmed",
-                "title": {
-                  "en": "Disarmed"
-                }
-              }
-            ]
           }
         ]
       }
     ],
     "actions": [
       {
-        "id": "set_homealarm_state",
+        "id": "actionArmAlarm",
         "title": {
-          "en": "Set state"
+          "en": "Arm alarm"
         },
         "args": [
           {
             "type": "device",
             "name": "device",
             "filter": "driver_id=partitions"
-          },
+          }
+        ]
+      },
+      {
+        "id": "actionDisarmAlarm",
+        "title": {
+          "en": "Disarm alarm"
+        },
+        "args": [
           {
-            "name": "state",
-            "type": "dropdown",
-            "values": [
-              {
-                "id": "armed",
-                "title": {
-                  "en": "Armed"
-                }
-              },
-              {
-                "id": "disarmed",
-                "title": {
-                  "en": "Disarmed"
-                }
-              }
-            ]
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=partitions"
           }
         ]
       }
