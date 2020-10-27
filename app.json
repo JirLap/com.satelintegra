@@ -65,7 +65,7 @@
       "name": {
         "en": "Partitions"
       },
-      "class": "sensor",
+      "class": "homealarm",
       "capabilities": [
         "homealarm_state",
         "alarm_generic"
@@ -158,6 +158,107 @@
       ]
     }
   ],
+  "flow": {
+    "triggers": [
+      {
+        "id": "homealarm_state_changed",
+        "title": {
+          "en": "The state changed"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=partitions"
+          },
+          {
+            "name": "state",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "armed",
+                "title": {
+                  "en": "Armed"
+                }
+              },
+              {
+                "id": "disarmed",
+                "title": {
+                  "en": "Disarmed"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "id": "homealarm_state_is",
+        "title": {
+          "en": "The state is !{{|not}}"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=partitions"
+          },
+          {
+            "name": "state",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "armed",
+                "title": {
+                  "en": "Armed"
+                }
+              },
+              {
+                "id": "disarmed",
+                "title": {
+                  "en": "Disarmed"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "id": "set_homealarm_state",
+        "title": {
+          "en": "Set state"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=partitions"
+          },
+          {
+            "name": "state",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "armed",
+                "title": {
+                  "en": "Armed"
+                }
+              },
+              {
+                "id": "disarmed",
+                "title": {
+                  "en": "Disarmed"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
   "capabilities": {
     "homealarm_state": {
       "type": "enum",

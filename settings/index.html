@@ -77,8 +77,8 @@
         </table>
     </fieldset>
 
-    <div id="myProgress">
-        <div id="myBar">0%</div>
+    <div id="Progress">
+        <div id="Bar">0%</div>
     </div>
 
 
@@ -86,16 +86,17 @@
     <script type="text/javascript">
 
         var i = 0;
-        function move(timer) {
+        function progressBar(timer) {
             if (i == 0) {
                 i = 1;
-                var elem = document.getElementById("myBar");
+                var elem = document.getElementById("Bar");
                 var width = 10;
                 var id = setInterval(frame, timer);
                 function frame() {
                     if (width >= 100) {
                         clearInterval(id);
                         i = 0;
+                        systemReadingStateReady()
                     } else {
                         width++;
                         elem.style.width = width + "%";
@@ -103,6 +104,12 @@
                     }
                 }
             }
+        }
+
+        function systemReadingStateReady() {
+            document.getElementById('systemstate').innerHTML = "Read alarmpanel";
+            Homey.alert('Partitions, Zones &  Outputs are read.\nAdd your devices.');
+            Homey.set('systemstate', false);
         }
 
         // a method named 'onHomeyReady' must be present in your code
@@ -124,9 +131,9 @@
             });
 
             Homey.get('alarmtype', function (err, alarmtype) {
-                    if (err) return Homey.alert(err);
-                    alarmtypeSetElement.value = alarmtype;
-                });
+                if (err) return Homey.alert(err);
+                alarmtypeSetElement.value = alarmtype;
+            });
 
             // Tell Homey we're ready to be displayed
             Homey.ready();
@@ -167,14 +174,13 @@
             var systemstateElement = document.getElementById('systemstate');
 
             systemstateElement.addEventListener('click', function (e) {
-                Homey.set('systemstate', false);
-                document.getElementById('systemstate').innerHTML = "Reading";
+                document.getElementById('systemstate').innerHTML = "Reading...";
                 Homey.set('systemstate', true);
                 Homey.get('alarmtype', function (err, alarmtype) {
                     if (err) return Homey.alert(err);
                     alarmtypeSetElement.value = alarmtype;
                     var alarmTypeNumber = alarmtype.match(/\d+/);
-                    move(Number(alarmTypeNumber)* 10);
+                    progressBar(Number(alarmTypeNumber) * 10, );
                 });
             });
 
