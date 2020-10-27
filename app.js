@@ -15,14 +15,10 @@ let satelSocket = {};
 let SatelSocketConnectionAlive = false;
 let totalZoneOutputPartitions = [];
 let alarmIdentified = false;
-let firstSystemRead = false;
 let zoneStatusEnable = false;
 
 class integraAlarm extends Homey.App {
 
-  /**
-   * onInit is called when the app is initialized.
-   */
   async onInit() {
     this.log('-------------------------------------------------------');
     this.log(`${this.id} APP is running...`);
@@ -61,14 +57,22 @@ class integraAlarm extends Homey.App {
 
     // when settings are changed reset the socket
     Homey.ManagerSettings.on('set', data => {
-      this.log('Settings are changed');
-      satelSocket.destroy();
-      SatelSocketConnectionAlive = false;
-      this.log('-------------------------------------------------------');
-      this.log('NEW SETTINGS');
-      this.log(`IP Address:  ${Homey.ManagerSettings.get('alarmaddr')}`);
-      this.log(`      Port:  ${Homey.ManagerSettings.get('alarmport')}`);
-      this.log('-------------------------------------------------------');
+      if (data === 'alarmaddr' || data === 'alarmport') {
+        this.log('Settings are changed');
+        satelSocket.destroy();
+        SatelSocketConnectionAlive = false;
+        this.log('-------------------------------------------------------');
+        this.log('NEW SETTINGS');
+        this.log(`IP Address:  ${Homey.ManagerSettings.get('alarmaddr')}`);
+        this.log(`      Port:  ${Homey.ManagerSettings.get('alarmport')}`);
+        this.log('-------------------------------------------------------');
+      } else if (data === 'systemstate') {
+        const systemRead = Homey.ManagerSettings.get('systemstate');
+        if (!systemRead) {
+          this.log('Reading system state');
+          this.satelSystemRead();
+        }
+      }
     });
   }
 
@@ -79,7 +83,7 @@ class integraAlarm extends Homey.App {
         this.socketConnection(Number(Homey.ManagerSettings.get('alarmport')), Homey.ManagerSettings.get('alarmaddr'));
         this.log(`Trying to reconnect to alarmpanel: ${Homey.ManagerSettings.get('alarmaddr')}`);
       }
-    }, 10000);
+    }, 5000);
   }
 
   // sendfunction for socket
@@ -93,7 +97,7 @@ class integraAlarm extends Homey.App {
   // create the socket
   async socketConnection(settings) {
     satelSocket = new net.Socket();
-    // satelSocket.setTimeout(15000);
+    // satelSocket.setTimeout(4000);
     satelSocket.connect(Number(Homey.ManagerSettings.get('alarmport')), Homey.ManagerSettings.get('alarmaddr'), () => {
     });
 
@@ -107,9 +111,6 @@ class integraAlarm extends Homey.App {
     satelSocket.on('connect', () => {
       this.log(`Connected with alarmpanel on IP: ${Homey.ManagerSettings.get('alarmaddr')}`);
       SatelSocketConnectionAlive = true;
-      if (!firstSystemRead) {
-        this.satelSystemRead();
-      }
     });
 
     // socket close
@@ -129,8 +130,6 @@ class integraAlarm extends Homey.App {
     satelSocket.on('data', data => {
       const answer = functions.ETHM1AnswerToArray(data);
       const payload = answer.slice(2, -4);
-      // this.log(' * Received data from alarmpanel...');
-
       if (functions.verifyAnswer(answer)) {
         if (debugEnabled) {
           this.log(`   - valid answer: ${payload}`);
@@ -180,11 +179,11 @@ class integraAlarm extends Homey.App {
 
   async satelSystemRead() {
     if (SatelSocketConnectionAlive) {
-      firstSystemRead = true;
       // Send command to read the systemtype.
       this.socketSend(functions.createFrameArray(['7E']));
       setTimeout(() => {
         if (alarmIdentified) {
+          this.log('Reading partitions');
           for (let totalPartitionsCount = 1; totalPartitionsCount <= totalZoneOutputPartitions[2]; totalPartitionsCount++) {
             setTimeout(() => {
               // send commands for readout partitions
@@ -195,6 +194,7 @@ class integraAlarm extends Homey.App {
             }, totalPartitionsCount * 100);
           }
 
+          this.log('Reading outputs');
           for (let totalOutputCount = 1; totalOutputCount <= totalZoneOutputPartitions[1]; totalOutputCount++) {
             setTimeout(() => {
               // send commands for readout outputs
@@ -204,6 +204,8 @@ class integraAlarm extends Homey.App {
               this.socketSend(functions.createFrameArray(['EE', '04', `${functions.dec2hex2Digit(totalOutputCount)}`]));
             }, totalOutputCount * 150);
           }
+
+          this.log('Reading zones');
           for (let totalZonesCount = 1; totalZonesCount <= totalZoneOutputPartitions[0]; totalZonesCount++) {
             setTimeout(() => {
               // send commands for readout zones
@@ -270,41 +272,49 @@ class integraAlarm extends Homey.App {
     switch (functions.hex2dec(payload[1])) {
       case 0:
         this.log('type = Integra 24');
+        Homey.ManagerSettings.set('alarmtype', 'Integra 24');
         totalZoneOutputPartitions = ['24', '20', '4'];
         alarmIdentified = true;
         break;
       case 1:
         this.log('type = Integra 32');
+        Homey.ManagerSettings.set('alarmtype', 'Integra 32');
         totalZoneOutputPartitions = ['32', '32', '16'];
         alarmIdentified = true;
         break;
       case 2:
         this.log('type = Integra 64');
+        Homey.ManagerSettings.set('alarmtype', 'Integra 64');
         totalZoneOutputPartitions = ['64', '64', '32'];
         alarmIdentified = true;
         break;
       case 3:
         this.log('type = Integra 128');
+        Homey.ManagerSettings.set('alarmtype', 'Integra 128');
         totalZoneOutputPartitions = ['128', '128', '32'];
         alarmIdentified = true;
         break;
       case 4:
         this.log('type = Integra 128-WRL SIM300');
+        Homey.ManagerSettings.set('alarmtype', ' Integra 128-WRL SIM300');
         totalZoneOutputPartitions = ['128', '128', '32'];
         alarmIdentified = true;
         break;
       case 66:
         this.log('type = Integra 64 PLUS');
+        Homey.ManagerSettings.set('alarmtype', 'Integra 64 PLUS');
         totalZoneOutputPartitions = ['64', '64', '32'];
         alarmIdentified = true;
         break;
       case 67:
         this.log('type = Integra 128 PLUS');
+        Homey.ManagerSettings.set('alarmtype', 'Integra 128 PLUS');
         totalZoneOutputPartitions = ['128', '128', '32'];
         alarmIdentified = true;
         break;
       case 132:
         this.log('type = Integra 128-WRL LEON');
+        Homey.ManagerSettings.set('alarmtype', 'Integra 128-WRL LEON');
         totalZoneOutputPartitions = ['128', '128', '32'];
         alarmIdentified = true;
         break;
