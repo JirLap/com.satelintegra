@@ -7,6 +7,10 @@
   "capabilities": [
     "onoff"
   ],
+  "images": {
+    "large": "/assets/images/large.png",
+    "small": "/assets/images/small.png"
+  },
   "icon": "/drivers/outputs/assets/icon.svg",
   "pair": [
     {

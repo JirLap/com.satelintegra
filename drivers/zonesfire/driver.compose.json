@@ -7,6 +7,10 @@
   "capabilities": [
     "alarm_fire"
   ],
+  "images": {
+    "large": "/assets/images/large.png",
+    "small": "/assets/images/small.png"
+  },
   "icon": "/drivers/zonesfire/assets/icon.svg",
   "pair": [
     {

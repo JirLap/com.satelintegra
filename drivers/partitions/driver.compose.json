@@ -9,6 +9,10 @@
     "alarm_generic"
     
   ],
+  "images": {
+    "large": "/assets/images/large.png",
+    "small": "/assets/images/small.png"
+  },
   "icon": "/drivers/partitions/assets/icon.svg",
   "pair": [
     {

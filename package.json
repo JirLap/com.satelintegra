@@ -11,6 +11,7 @@
     "homey": "^2.8.0"
   },
   "dependencies": {
-    "@tuxjs/eventbus": "^1.0.3"
+    "@tuxjs/eventbus": "^1.0.3",
+    "net": "^1.0.2"
   }
 }

@@ -18,7 +18,6 @@
   "category": [
     "security"
   ],
-  "permissions": [],
   "images": {
     "large": "/assets/images/large.png",
     "small": "/assets/images/small.png"
@@ -32,9 +31,6 @@
       {
         "name": "Mickel Luiten",
         "email": "mickelluiten@gmail.com"
-      },
-      {
-        "name": "Fokko Masselink"
       }
     ]
   }
