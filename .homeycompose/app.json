@@ -1,7 +1,8 @@
 {
   "id": "com.satelintegra",
-  "version": "0.0.1",
+  "version": "2.0.0",
   "compatibility": ">=4.0.0",
+  "homeyCommunityTopicId": 36654,
   "support": "mailto:mickelluiten@gmail.com",
   "source": "https://github.com/mickelluiten/com.satelintegra",
   "sdk": 2,
@@ -12,7 +13,7 @@
     "net": "*"
   },
   "description": {
-    "en": "Satel Interga Alarmsystem integration"
+    "en": "Adds interaction with Satel Integra alarmsystems."
   },
   "category": [
     "security"
@@ -31,6 +32,9 @@
       {
         "name": "Mickel Luiten",
         "email": "mickelluiten@gmail.com"
+      },
+      {
+        "name": "Fokko Masselink"
       }
     ]
   }
