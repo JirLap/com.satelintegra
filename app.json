@@ -45,6 +45,10 @@
       "capabilities": [
         "onoff"
       ],
+      "images": {
+        "large": "/assets/images/large.png",
+        "small": "/assets/images/small.png"
+      },
       "icon": "/drivers/outputs/assets/icon.svg",
       "pair": [
         {
@@ -70,6 +74,10 @@
         "onoff",
         "alarm_generic"
       ],
+      "images": {
+        "large": "/assets/images/large.png",
+        "small": "/assets/images/small.png"
+      },
       "icon": "/drivers/partitions/assets/icon.svg",
       "pair": [
         {
@@ -94,6 +102,10 @@
       "capabilities": [
         "alarm_contact"
       ],
+      "images": {
+        "large": "/assets/images/large.png",
+        "small": "/assets/images/small.png"
+      },
       "icon": "/drivers/zonesmotion/assets/icon.svg",
       "pair": [
         {
@@ -118,6 +130,10 @@
       "capabilities": [
         "alarm_fire"
       ],
+      "images": {
+        "large": "/assets/images/large.png",
+        "small": "/assets/images/small.png"
+      },
       "icon": "/drivers/zonesfire/assets/icon.svg",
       "pair": [
         {
@@ -142,6 +158,10 @@
       "capabilities": [
         "alarm_motion"
       ],
+      "images": {
+        "large": "/assets/images/large.png",
+        "small": "/assets/images/small.png"
+      },
       "icon": "/drivers/zonesmotion/assets/icon.svg",
       "pair": [
         {
