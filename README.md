@@ -20,5 +20,6 @@ Supported alarmsystems equipped with ETHM-1 module:
 * Integra 128
 * Integra 128-WRL (SIM300 & LEON)
 
-Check Homey community forum for more details
+Check Homey community forum for more details.
+
 https://community.athom.com/t/app-satel-integra-alarmsystem-integration/36654
