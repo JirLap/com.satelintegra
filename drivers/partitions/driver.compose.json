@@ -3,9 +3,9 @@
   "name": {
     "en": "Partitions"
   },
-  "class": "homealarm",
+  "class": "sensor",
   "capabilities": [
-    "homealarm_state",
+    "onoff",
     "alarm_generic"
     
   ],

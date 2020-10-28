@@ -226,6 +226,7 @@ class integraAlarm extends Homey.App {
 
   // socket poller for zonestatus
   async satelSystemZoneStatus() {
+    this.log('Polling zones');
     if (!zoneStatusEnable) {
       setInterval(() => {
         if (statuspollers) {
@@ -241,6 +242,7 @@ class integraAlarm extends Homey.App {
 
   // socket poller for outputstatus
   async satelSystemOuputstatus() {
+    this.log('Polling outputs');
     setInterval(() => {
       if (statuspollers) {
         setTimeout(() => {
@@ -266,6 +268,7 @@ class integraAlarm extends Homey.App {
 
   // socket poller for partitionalarms
   async satelSystemPartitionAlarms() {
+    this.log('Polling partitions alarms');
     setInterval(() => {
       if (statuspollers) {
         setTimeout(() => {

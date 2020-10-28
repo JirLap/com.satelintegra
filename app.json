@@ -65,9 +65,9 @@
       "name": {
         "en": "Partitions"
       },
-      "class": "homealarm",
+      "class": "sensor",
       "capabilities": [
-        "homealarm_state",
+        "onoff",
         "alarm_generic"
       ],
       "icon": "/drivers/partitions/assets/icon.svg",
@@ -158,79 +158,6 @@
       ]
     }
   ],
-  "flow": {
-    "triggers": [
-      {
-        "id": "triggerGotArmed",
-        "title": {
-          "en": "Alarm was armed"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=partitions"
-          }
-        ]
-      },
-      {
-        "id": "triggerGotDisarmed",
-        "title": {
-          "en": "Alarm was disarmed"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=partitions"
-          }
-        ]
-      }
-    ],
-    "conditions": [
-      {
-        "id": "conditionIsArmed",
-        "title": {
-          "en": "Alarm !{{is|isn't}} armed"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=partitions"
-          }
-        ]
-      }
-    ],
-    "actions": [
-      {
-        "id": "actionArmAlarm",
-        "title": {
-          "en": "Arm alarm"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=partitions"
-          }
-        ]
-      },
-      {
-        "id": "actionDisarmAlarm",
-        "title": {
-          "en": "Disarm alarm"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=partitions"
-          }
-        ]
-      }
-    ]
-  },
   "capabilities": {
     "homealarm_state": {
       "type": "enum",
