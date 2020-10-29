@@ -8,8 +8,8 @@
     "alarm_fire"
   ],
   "images": {
-    "large": "/assets/images/large.png",
-    "small": "/assets/images/small.png"
+    "large": "/drivers/zonesfire/assets/images/large.png",
+    "small": "/drivers/zonesfire/assets/images/small.png"
   },
   "icon": "/drivers/zonesfire/assets/icon.svg",
   "pair": [

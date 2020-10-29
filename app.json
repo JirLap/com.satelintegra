@@ -49,8 +49,8 @@
         "onoff"
       ],
       "images": {
-        "large": "/assets/images/large.png",
-        "small": "/assets/images/small.png"
+        "large": "/drivers/outputs/assets/images/large.png",
+        "small": "/drivers/outputs/assets/images/small.png"
       },
       "icon": "/drivers/outputs/assets/icon.svg",
       "pair": [
@@ -78,8 +78,8 @@
         "alarm_generic"
       ],
       "images": {
-        "large": "/assets/images/large.png",
-        "small": "/assets/images/small.png"
+        "large": "/drivers/partitions/assets/images/large.png",
+        "small": "/drivers/partitions/assets/images/small.png"
       },
       "icon": "/drivers/partitions/assets/icon.svg",
       "pair": [
@@ -106,8 +106,8 @@
         "alarm_contact"
       ],
       "images": {
-        "large": "/assets/images/large.png",
-        "small": "/assets/images/small.png"
+        "large": "/drivers/zonesmotion/assets/images/large.png",
+        "small": "/drivers/zonesmotion/assets/images/small.png"
       },
       "icon": "/drivers/zonesmotion/assets/icon.svg",
       "pair": [
@@ -134,8 +134,8 @@
         "alarm_fire"
       ],
       "images": {
-        "large": "/assets/images/large.png",
-        "small": "/assets/images/small.png"
+        "large": "/drivers/zonesfire/assets/images/large.png",
+        "small": "/drivers/zonesfire/assets/images/small.png"
       },
       "icon": "/drivers/zonesfire/assets/icon.svg",
       "pair": [
@@ -162,8 +162,8 @@
         "alarm_motion"
       ],
       "images": {
-        "large": "/assets/images/large.png",
-        "small": "/assets/images/small.png"
+        "large": "/drivers/zonesmotion/assets/images/large.png",
+        "small": "/drivers/zonesmotion/assets/images/small.png"
       },
       "icon": "/drivers/zonesmotion/assets/icon.svg",
       "pair": [

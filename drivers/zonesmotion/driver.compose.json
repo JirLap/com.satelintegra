@@ -8,8 +8,8 @@
     "alarm_motion"
   ],
   "images": {
-    "large": "/assets/images/large.png",
-    "small": "/assets/images/small.png"
+    "large": "/drivers/zonesmotion/assets/images/large.png",
+    "small": "/drivers/zonesmotion/assets/images/small.png"
   },
   "icon": "/drivers/zonesmotion/assets/icon.svg",
   "pair": [
