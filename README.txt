@@ -1,5 +1,3 @@
-Adds interaction with Satel Integra alarmsystems.
-
 Features:
 * Partitions alarm state & Control (armed/disarmed) 
 * Partitions alarms 

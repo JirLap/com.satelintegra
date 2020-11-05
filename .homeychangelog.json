@@ -1,5 +1,8 @@
 {
   "2.0.0": {
     "en": "Initial release"
+  },
+  "2.0.1": {
+    "en": "removed \"Adds interaction with Satel Integra alarmsystems\" from readme.txt"
   }
 }
