@@ -4,5 +4,8 @@
   },
   "2.0.1": {
     "en": "removed \"Adds interaction with Satel Integra alarmsystems\" from readme.txt"
+  },
+  "2.0.2": {
+    "en": "icon/images contactzone corrected"
   }
 }
