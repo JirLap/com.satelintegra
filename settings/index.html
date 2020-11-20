@@ -31,7 +31,7 @@
             <div class="field row">
                 <tr>
                     <th style="width:170px;"><label for="alarmport">Port</label></th>
-                    <td rowspan="2"><input id="alarmport" type="text" value="7094" placeholder="7094" required /></td>
+                    <td rowspan="2"><input id="alarmport" type="text"  placeholder="7094" required /></td>
                 </tr>
             </div>
         </table>
@@ -43,7 +43,7 @@
             <div class="field row">
                 <tr>
                     <th style="width:170px;"><label for="alarmcode">Usercode</label></th>
-                    <td rowspan="2"><input id="alarmcode" type="password" value="0000" placeholder="0000" required />
+                    <td rowspan="2"><input id="alarmcode" type="password"  placeholder="0000" required />
                     </td>
                 </tr>
             </div>
@@ -65,7 +65,7 @@
         <table>
             <div class="field row">
                 <tr>
-                    <th style="width:170px;"><label for="alarmtype">alarmtype</label></th>
+                    <th style="width:170px;"><label for="alarmtype">Alarmtype</label></th>
                     <td rowspan="2"><input id="alarmtype" type="text" /></td>
                 </tr>
             </div>
@@ -171,12 +171,18 @@
             systemstateElement.addEventListener('click', function (e) {
                 document.getElementById('systemstate').innerHTML = "Reading...";
                 Homey.set('systemstate', true);
+                setTimeout(() => {
                 Homey.get('alarmtype', function (err, alarmtype) {
                     if (err) return Homey.alert(err);
                     alarmtypeSetElement.value = alarmtype;
-                    var alarmTypeNumber = alarmtype.match(/\d+/);
-                    progressBar(Number(alarmTypeNumber) * 10, );
+                        var alarmTypeNumber = alarmtype.match(/\d+/);
+                        if(alarmTypeNumber == null){
+                            Homey.alert('Could not read alarmtyp\nCheck settings');
+                        } else {
+                        progressBar(Number(alarmTypeNumber) * 10, );
+                        }
                 });
+            }, 2000);
             });
 
         }
