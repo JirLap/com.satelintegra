@@ -73,6 +73,7 @@ class integraAlarm extends Homey.App {
           this.log('Reading system state.');
           statuspollers = false;
           this.satelSystemRead();
+          Homey.ManagerSettings.set('systemstate', false);
         } else {
           statuspollers = true;
         }
@@ -83,11 +84,11 @@ class integraAlarm extends Homey.App {
   // socket poller/reconnect
   async socketConnectorPoll() {
     setInterval(() => {
-      if (!SatelSocketConnectionAlive) {
+      if (!SatelSocketConnectionAlive && Homey.ManagerSettings.get('alarmaddr') != null) {
         this.socketConnection(Number(Homey.ManagerSettings.get('alarmport')), Homey.ManagerSettings.get('alarmaddr'));
         this.log(`Trying to reconnect to alarmpanel: ${Homey.ManagerSettings.get('alarmaddr')}`);
       }
-    }, 5000);
+    }, 500);
   }
 
   // sendfunction for socket
@@ -195,7 +196,7 @@ class integraAlarm extends Homey.App {
                 this.log(`Reading partitionnumber : ${totalPartitionsCount}`);
               }
               this.socketSend(functions.createFrameArray(['EE', '00', `${functions.dec2hex2Digit(totalPartitionsCount)}`]));
-            }, totalPartitionsCount * 100);
+            }, totalPartitionsCount * 500);
           }
 
           this.log('Reading outputs');
@@ -206,7 +207,7 @@ class integraAlarm extends Homey.App {
                 this.log(`Reading outputnumber : ${totalOutputCount}`);
               }
               this.socketSend(functions.createFrameArray(['EE', '04', `${functions.dec2hex2Digit(totalOutputCount)}`]));
-            }, totalOutputCount * 150);
+            }, totalOutputCount * 500);
           }
 
           this.log('Reading zones');
@@ -217,10 +218,10 @@ class integraAlarm extends Homey.App {
                 this.log(`Reading zones : ${totalZonesCount}`);
               }
               this.socketSend(functions.createFrameArray(['EE', '01', `${functions.dec2hex2Digit(totalZonesCount)}`]));
-            }, totalZonesCount * 200);
+            }, totalZonesCount * 500);
           }
         }
-      }, 3000);
+      }, 4000);
     }
   }
 

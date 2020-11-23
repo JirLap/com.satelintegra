@@ -122,12 +122,12 @@ function outputListToByteArray(output, size = 16) {
   }
   // split into sections of 8 characters
   const byteList = byteArray.reverse().join('').match(/.{8}/g);
-  const partHexList = [];
+  const outHexList = [];
   for (const b of byteList.reverse()) {
     // convert bin to hex, uppercase and pad left
-    partHexList.push(parseInt(b, 2).toString(16).toUpperCase().padStart(2, '0'));
+    outHexList.push(parseInt(b, 2).toString(16).toUpperCase().padStart(2, '0'));
   }
-  return partHexList;
+  return outHexList;
 } // outputListToByteArray
 
 function createFrameArray(cmd) {

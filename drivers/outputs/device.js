@@ -45,7 +45,7 @@ class Device extends Homey.Device {
     ary.push(mode);
     // next 8 bytes are usercode
     ary = ary.concat(functions.stringToHexBytes(Homey.ManagerSettings.get('alarmcode'), 8, 'F'));
-    // next 16 bytes are zones to arm
+    // next 16 bytes are outputs
     ary = ary.concat(functions.outputListToByteArray(deviceID));
     return functions.createFrameArray(ary);
   }

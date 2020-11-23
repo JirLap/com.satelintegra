@@ -10,5 +10,8 @@
   },
   "2.1.0": {
     "en": "Reading of alarmtype failed"
+  },
+  "2.2.0": {
+    "en": "Connection improvement"
   }
 }
