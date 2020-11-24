@@ -40,7 +40,7 @@ class Driver extends Homey.Driver {
           data: {
             id: `${functions.hex2dec(outputNumber)}`,
           },
-          icon: '/icon.svg',
+          icon: 'icon.svg',
         };
         devices.push(device);
       }
