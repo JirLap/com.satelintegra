@@ -13,5 +13,11 @@
   },
   "2.2.0": {
     "en": "Connection improvement"
+  },
+  "2.2.1": {
+    "en": "Read satelpanel improvement"
+  },
+  "2.2.2": {
+    "en": "Bugfix on panelread"
   }
 }

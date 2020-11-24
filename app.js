@@ -73,7 +73,6 @@ class integraAlarm extends Homey.App {
           this.log('Reading system state.');
           statuspollers = false;
           this.satelSystemRead();
-          Homey.ManagerSettings.set('systemstate', false);
         } else {
           statuspollers = true;
         }
@@ -186,42 +185,55 @@ class integraAlarm extends Homey.App {
     if (SatelSocketConnectionAlive) {
       // Send command to read the systemtype.
       this.socketSend(functions.createFrameArray(['7E']));
+    }
+    setTimeout(() => {
+      if (alarmIdentified) {
+        this.zoneRead();
+        this.outputRead();
+        this.partitionRead();
+      }
+    }, 2000);
+  }
+
+  // reading of zones
+  async zoneRead() {
+    this.log('Reading zones');
+    for (let totalZonesCount = 1; totalZonesCount <= totalZoneOutputPartitions[0]; totalZonesCount++) {
       setTimeout(() => {
-        if (alarmIdentified) {
-          this.log('Reading partitions');
-          for (let totalPartitionsCount = 1; totalPartitionsCount <= totalZoneOutputPartitions[2]; totalPartitionsCount++) {
-            setTimeout(() => {
-              // send commands for readout partitions
-              if (debugEnabled) {
-                this.log(`Reading partitionnumber : ${totalPartitionsCount}`);
-              }
-              this.socketSend(functions.createFrameArray(['EE', '00', `${functions.dec2hex2Digit(totalPartitionsCount)}`]));
-            }, totalPartitionsCount * 500);
-          }
-
-          this.log('Reading outputs');
-          for (let totalOutputCount = 1; totalOutputCount <= totalZoneOutputPartitions[1]; totalOutputCount++) {
-            setTimeout(() => {
-              // send commands for readout outputs
-              if (debugEnabled) {
-                this.log(`Reading outputnumber : ${totalOutputCount}`);
-              }
-              this.socketSend(functions.createFrameArray(['EE', '04', `${functions.dec2hex2Digit(totalOutputCount)}`]));
-            }, totalOutputCount * 500);
-          }
-
-          this.log('Reading zones');
-          for (let totalZonesCount = 1; totalZonesCount <= totalZoneOutputPartitions[0]; totalZonesCount++) {
-            setTimeout(() => {
-              // send commands for readout zones
-              if (debugEnabled) {
-                this.log(`Reading zones : ${totalZonesCount}`);
-              }
-              this.socketSend(functions.createFrameArray(['EE', '01', `${functions.dec2hex2Digit(totalZonesCount)}`]));
-            }, totalZonesCount * 500);
-          }
+        // send commands for readout zones
+        if (debugEnabled) {
+          this.log(`Reading zonenumber : ${totalZonesCount}`);
         }
-      }, 4000);
+        this.socketSend(functions.createFrameArray(['EE', '01', `${functions.dec2hex2Digit(totalZonesCount)}`]));
+      }, totalZonesCount * 500);
+    }
+  }
+
+  // reading of outputs
+  async outputRead() {
+    this.log('Reading outputs');
+    for (let totalOutputCount = 1; totalOutputCount <= totalZoneOutputPartitions[1]; totalOutputCount++) {
+      setTimeout(() => {
+        // send commands for readout outputs
+        if (debugEnabled) {
+          this.log(`Reading outputnumber : ${totalOutputCount}`);
+        }
+        this.socketSend(functions.createFrameArray(['EE', '04', `${functions.dec2hex2Digit(totalOutputCount)}`]));
+      }, totalOutputCount * 500);
+    }
+  }
+
+  // reading of partitions.
+  async partitionRead() {
+    this.log('Reading partitions');
+    for (let totalPartitionsCount = 1; totalPartitionsCount <= totalZoneOutputPartitions[2]; totalPartitionsCount++) {
+      setTimeout(() => {
+        // send commands for readout partitions
+        if (debugEnabled) {
+          this.log(`Reading partitionnumber : ${totalPartitionsCount}`);
+        }
+        this.socketSend(functions.createFrameArray(['EE', '00', `${functions.dec2hex2Digit(totalPartitionsCount)}`]));
+      }, totalPartitionsCount * 500);
     }
   }
 
