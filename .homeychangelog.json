@@ -19,5 +19,8 @@
   },
   "2.2.2": {
     "en": "Bugfix on panelread"
+  },
+  "2.2.3": {
+    "en": "Improvement on socket pollers "
   }
 }

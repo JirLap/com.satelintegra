@@ -131,6 +131,7 @@
             });
 
             // Tell Homey we're ready to be displayed
+            Homey.set('systemstate', false);
             Homey.ready();
 
             var alarmaddrSetElement = document.getElementById('alarmaddr');
@@ -141,7 +142,7 @@
 
             saveElement.addEventListener('click', function (e) {
 
-
+                
                 // create Regular Expression that validates for IPv4 addresses, then do the actual test on the input.
                 var Ipv4RegEx = new RegExp('^(([01]?\\d\\d?|2[0-4]\\d|25[0-5]).){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$');
                 var IPInputOK = Ipv4RegEx.test(alarmaddrSetElement.value);

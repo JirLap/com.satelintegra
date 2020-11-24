@@ -1,6 +1,5 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable max-len */
-/* eslint-disable no-unused-vars */
 
 'use strict';
 
@@ -16,6 +15,9 @@ let SatelSocketConnectionAlive = false;
 let totalZoneOutputPartitions = [];
 let alarmIdentified = false;
 let zoneStatusEnable = false;
+let outputStatusEnable = false;
+let partitionStatusEnable = false;
+let partitionAlarmStatusEnable = false;
 let statuspollers = true;
 
 class integraAlarm extends Homey.App {
@@ -239,14 +241,14 @@ class integraAlarm extends Homey.App {
 
   // socket poller for zonestatus
   async satelSystemZoneStatus() {
-    this.log('Polling zones');
     if (!zoneStatusEnable) {
+      zoneStatusEnable = true;
+      this.log('Polling zones');
       setInterval(() => {
         if (statuspollers) {
           setTimeout(() => {
           // send command for zone violation
             this.socketSend(functions.createFrameArray(['00']));
-            zoneStatusEnable = true;
           }, 1000);
         }
       }, 1000);
@@ -255,41 +257,50 @@ class integraAlarm extends Homey.App {
 
   // socket poller for outputstatus
   async satelSystemOuputstatus() {
-    this.log('Polling outputs');
-    setInterval(() => {
-      if (statuspollers) {
-        setTimeout(() => {
-        // send command for output status
-          this.socketSend(functions.createFrameArray(['17']));
-        }, 1000);
-      }
-    }, 1000);
+    if (!outputStatusEnable) {
+      outputStatusEnable = true;
+      this.log('Polling outputs');
+      setInterval(() => {
+        if (statuspollers) {
+          setTimeout(() => {
+            // send command for output status
+            this.socketSend(functions.createFrameArray(['17']));
+          }, 1000);
+        }
+      }, 1000);
+    }
   }
 
   // socket poller for partitionstatus
   async satelSystemPartitionStatus() {
-    this.log('Polling partitions');
-    setInterval(() => {
-      if (statuspollers) {
-        setTimeout(() => {
+    if (!partitionStatusEnable) {
+      partitionStatusEnable = true;
+      this.log('Polling partitions');
+      setInterval(() => {
+        if (statuspollers) {
+          setTimeout(() => {
           // send command for partition status
-          this.socketSend(functions.createFrameArray(['0A']));
-        }, 1000);
-      }
-    }, 1000);
+            this.socketSend(functions.createFrameArray(['0A']));
+          }, 1000);
+        }
+      }, 1000);
+    }
   }
 
   // socket poller for partitionalarms
   async satelSystemPartitionAlarms() {
-    this.log('Polling partitions alarms');
-    setInterval(() => {
-      if (statuspollers) {
-        setTimeout(() => {
-        // send command for partitionalarmss
-          this.socketSend(functions.createFrameArray(['13']));
-        }, 1000);
-      }
-    }, 1000);
+    if (!partitionAlarmStatusEnable) {
+      partitionAlarmStatusEnable = true;
+      this.log('Polling partitions alarms');
+      setInterval(() => {
+        if (statuspollers) {
+          setTimeout(() => {
+            // send command for partitionalarmss
+            this.socketSend(functions.createFrameArray(['13']));
+          }, 1000);
+        }
+      }, 1000);
+    }
   }
 
   // parse data to identyfy alarmpanel
