@@ -32,7 +32,6 @@ class Driver extends Homey.Driver {
         data: {
           id: `${functions.hex2dec(partitionNumber)}`,
         },
-        icon: 'icon.svg',
       };
       devices.push(device);
     });

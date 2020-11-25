@@ -22,5 +22,8 @@
   },
   "2.2.3": {
     "en": "Improvement on socket pollers "
+  },
+  "2.3.0": {
+    "en": "Code Cleanup & panelreading improvement"
   }
 }

@@ -176,12 +176,10 @@
                 Homey.get('alarmtype', function (err, alarmtype) {
                     if (err) return Homey.alert(err);
                     alarmtypeSetElement.value = alarmtype;
-                        var alarmTypeNumber = alarmtype.match(/\d+/);
-                        if(alarmTypeNumber == null){
-                            Homey.alert('Could not read alarmtyp\nCheck settings');
-                        } else {
-                        progressBar(Number(alarmTypeNumber) * 10, );
-                        }
+                    Homey.get('alarmtypetotal', function (err, alarmtypetotal) {
+                    if (err) return Homey.alert(err);
+                        progressBar(Number(alarmtypetotal) * 10, );
+                    });
                 });
             }, 2000);
             });

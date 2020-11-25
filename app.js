@@ -170,7 +170,7 @@ class integraAlarm extends Homey.App {
             break;
           case '17':
             // send outputstatus to output device
-            eventBus.publish('outputtatus', payload);
+            eventBus.publish('outputstatus', payload);
             break;
           default:
             if (debugEnabled) {
@@ -207,7 +207,7 @@ class integraAlarm extends Homey.App {
           this.log(`Reading zonenumber : ${totalZonesCount}`);
         }
         this.socketSend(functions.createFrameArray(['EE', '01', `${functions.dec2hex2Digit(totalZonesCount)}`]));
-      }, totalZonesCount * 500);
+      }, totalZonesCount * 1000);
     }
   }
 
@@ -221,7 +221,7 @@ class integraAlarm extends Homey.App {
           this.log(`Reading outputnumber : ${totalOutputCount}`);
         }
         this.socketSend(functions.createFrameArray(['EE', '04', `${functions.dec2hex2Digit(totalOutputCount)}`]));
-      }, totalOutputCount * 500);
+      }, totalOutputCount * 1000);
     }
   }
 
@@ -235,7 +235,7 @@ class integraAlarm extends Homey.App {
           this.log(`Reading partitionnumber : ${totalPartitionsCount}`);
         }
         this.socketSend(functions.createFrameArray(['EE', '00', `${functions.dec2hex2Digit(totalPartitionsCount)}`]));
-      }, totalPartitionsCount * 500);
+      }, totalPartitionsCount * 1000);
     }
   }
 
@@ -313,48 +313,56 @@ class integraAlarm extends Homey.App {
       case 0:
         this.log('type = Integra 24');
         Homey.ManagerSettings.set('alarmtype', 'Integra 24');
+        Homey.ManagerSettings.set('alarmtypetotal', '48');
         totalZoneOutputPartitions = ['24', '20', '4'];
         alarmIdentified = true;
         break;
       case 1:
         this.log('type = Integra 32');
         Homey.ManagerSettings.set('alarmtype', 'Integra 32');
+        Homey.ManagerSettings.set('alarmtypetotal', '80');
         totalZoneOutputPartitions = ['32', '32', '16'];
         alarmIdentified = true;
         break;
       case 2:
         this.log('type = Integra 64');
         Homey.ManagerSettings.set('alarmtype', 'Integra 64');
+        Homey.ManagerSettings.set('alarmtypetotal', '160');
         totalZoneOutputPartitions = ['64', '64', '32'];
         alarmIdentified = true;
         break;
       case 3:
         this.log('type = Integra 128');
         Homey.ManagerSettings.set('alarmtype', 'Integra 128');
+        Homey.ManagerSettings.set('alarmtypetotal', '288');
         totalZoneOutputPartitions = ['128', '128', '32'];
         alarmIdentified = true;
         break;
       case 4:
         this.log('type = Integra 128-WRL SIM300');
         Homey.ManagerSettings.set('alarmtype', ' Integra 128-WRL SIM300');
+        Homey.ManagerSettings.set('alarmtypetotal', '288');
         totalZoneOutputPartitions = ['128', '128', '32'];
         alarmIdentified = true;
         break;
       case 66:
         this.log('type = Integra 64 PLUS');
         Homey.ManagerSettings.set('alarmtype', 'Integra 64 PLUS');
+        Homey.ManagerSettings.set('alarmtypetotal', '160');
         totalZoneOutputPartitions = ['64', '64', '32'];
         alarmIdentified = true;
         break;
       case 67:
         this.log('type = Integra 128 PLUS');
         Homey.ManagerSettings.set('alarmtype', 'Integra 128 PLUS');
+        Homey.ManagerSettings.set('alarmtypetotal', '288');
         totalZoneOutputPartitions = ['128', '128', '32'];
         alarmIdentified = true;
         break;
       case 132:
         this.log('type = Integra 128-WRL LEON');
         Homey.ManagerSettings.set('alarmtype', 'Integra 128-WRL LEON');
+        Homey.ManagerSettings.set('alarmtypetotal', '288');
         totalZoneOutputPartitions = ['128', '128', '32'];
         alarmIdentified = true;
         break;

@@ -36,7 +36,6 @@ class satelZonesFireDriver extends Homey.Driver {
         data: {
           id: `${functions.hex2dec(payload[2])}`,
         },
-        icon: 'icon.svg',
       };
       devices.push(device);
     });
