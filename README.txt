@@ -8,7 +8,7 @@ Features:
 
 Flow triggers, actions & conditions for all features
 
-Supported alarmsystems equipped with ETHM-1 module:
+Supported alarmsystems equipped with ETHM-1(PLUS) module:
 * Intergra 24
 * Intergra 32
 * Intergra 64 
