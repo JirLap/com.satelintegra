@@ -207,7 +207,7 @@ class integraAlarm extends Homey.App {
           this.log(`Reading zonenumber : ${totalZonesCount}`);
         }
         this.socketSend(functions.createFrameArray(['EE', '01', `${functions.dec2hex2Digit(totalZonesCount)}`]));
-      }, totalZonesCount * 1000);
+      }, totalZonesCount * 1720);
     }
   }
 
@@ -221,7 +221,7 @@ class integraAlarm extends Homey.App {
           this.log(`Reading outputnumber : ${totalOutputCount}`);
         }
         this.socketSend(functions.createFrameArray(['EE', '04', `${functions.dec2hex2Digit(totalOutputCount)}`]));
-      }, totalOutputCount * 1000);
+      }, totalOutputCount * 1155);
     }
   }
 

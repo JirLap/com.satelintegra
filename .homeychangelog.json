@@ -25,5 +25,8 @@
   },
   "2.3.0": {
     "en": "Code Cleanup & panelreading improvement"
+  },
+  "2.3.1": {
+    "en": "Timing issue panelread"
   }
 }
