@@ -17,7 +17,7 @@ class Device extends Homey.Device {
   async onInit() {
     this.log(`Outputs: ${this.getName()} initialized ID: ${this.getDeviceId()}`);
 
-    // make array by deviceID on wich devices are initialized and are uses
+    // make array by deviceID on wich devices are initialized and are used
     OutputsActiveOnHomey.push(this.getDeviceId());
 
     eventBus.publish('outputstatuspolltrue', true);
