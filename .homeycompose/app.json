@@ -1,13 +1,13 @@
 {
-  "id": "com.satelintegra",
-  "version": "2.3.1",
+  "id": "com.satelintegra2",
+  "version": "2.4.1",
   "compatibility": ">=4.0.0",
   "homeyCommunityTopicId": 36654,
   "support": "mailto:mickelluiten@gmail.com",
   "source": "https://github.com/mickelluiten/com.satelintegra",
   "sdk": 2,
   "name": {
-    "en": "Satel Integra Alarm"
+    "en": "Satel Integra Alarm2"
   },
   "dependencies": {
     "net": "*"

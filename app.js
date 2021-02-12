@@ -102,10 +102,12 @@ class integraAlarm extends Homey.App {
 
   // create the socket
   async socketConnection(settings) {
-    satelSocket = new net.Socket();
-    // satelSocket.setTimeout(4000);
-    satelSocket.connect(Number(Homey.ManagerSettings.get('alarmport')), Homey.ManagerSettings.get('alarmaddr'), () => {
+   satelSocket = new net.Socket();
+   // satelSocket.setTimeout(4000);
+   satelSocket.connect(Number(Homey.ManagerSettings.get('alarmport')), Homey.ManagerSettings.get('alarmaddr'), () => {
     });
+     
+   
 
     // socket timeout
     satelSocket.on('timeout', () => {
@@ -248,7 +250,7 @@ class integraAlarm extends Homey.App {
         if (statuspollers) {
           setTimeout(() => {
           // send command for zone violation
-            this.socketSend(functions.createFrameArray(['00']));
+            //this.socketSend(functions.createFrameArray(['00']));
           }, 1000);
         }
       }, 1000);
@@ -264,7 +266,7 @@ class integraAlarm extends Homey.App {
         if (statuspollers) {
           setTimeout(() => {
             // send command for output status
-            this.socketSend(functions.createFrameArray(['17']));
+            //this.socketSend(functions.createFrameArray(['17']));
           }, 1000);
         }
       }, 1000);
@@ -280,7 +282,7 @@ class integraAlarm extends Homey.App {
         if (statuspollers) {
           setTimeout(() => {
           // send command for partition status
-            this.socketSend(functions.createFrameArray(['0A']));
+            //this.socketSend(functions.createFrameArray(['0A']));
           }, 1000);
         }
       }, 1000);
@@ -296,7 +298,7 @@ class integraAlarm extends Homey.App {
         if (statuspollers) {
           setTimeout(() => {
             // send command for partitionalarmss
-            this.socketSend(functions.createFrameArray(['13']));
+            //this.socketSend(functions.createFrameArray(['13']));
           }, 1000);
         }
       }, 1000);
