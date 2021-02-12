@@ -87,101 +87,103 @@ class integraAlarm extends Homey.App {
     setInterval(() => {
       if (!SatelSocketConnectionAlive && Homey.ManagerSettings.get('alarmaddr') != null) {
         this.socketConnection(Number(Homey.ManagerSettings.get('alarmport')), Homey.ManagerSettings.get('alarmaddr'));
-        this.log(`Trying to reconnect to alarmpanel: ${Homey.ManagerSettings.get('alarmaddr')}`);
+        this.log(`Trying to (re)connect to alarmpanel: ${Homey.ManagerSettings.get('alarmaddr')}`);
       }
     }, 500);
   }
 
   // sendfunction for socket
   async socketSend(input) {
-    satelSocket.write(Buffer.from(input.join(''), 'hex'));
-    if (debugEnabled) {
-      this.log(` * Send command: ${input.join('').match(/.{2}/g)}`);
-    }
+    return new Promise((resolve) => {
+      satelSocket.write(Buffer.from(input.join(''), 'hex'));
+      if (debugEnabled) {
+        this.log(` * Send command: ${input.join('').match(/.{2}/g)}`);
+      }
+      // socket data
+      satelSocket.once('data', (data) => {
+        resolve(data);
+        const answer = functions.ETHM1AnswerToArray(data);
+        const payload = answer.slice(2, -4);
+        if (functions.verifyAnswer(answer)) {
+          if (debugEnabled) {
+            this.log(`   - valid answer: ${payload}`);
+          }
+          switch (payload[0]) {
+            case '7E':
+              this.parsePayloadSystemType(payload);
+              break;
+            case 'EE': // systaemstate
+              if (payload[1] == '00') {
+                // send partiotion info to partitions driver
+                eventBus.publish('partitions', payload);
+              } else if (payload[1] == '01') {
+                // send zones info to all zone drivers
+                eventBus.publish('zones', payload);
+              } else if (payload[1] == '04') {
+                // send output info to output driver
+                eventBus.publish('outputs', payload);
+              }
+              break;
+            case '0A':
+              // send partitionsstatus to partition device
+              eventBus.publish('partitionstatus', payload);
+              break;
+            case '13':
+              // send partitionsalarms to partition device
+              eventBus.publish('partitionalarm', payload);
+              break;
+            case '00':
+              // send zonestatus to all zone devices
+              eventBus.publish('zonestatus', payload);
+              break;
+            case '17':
+              // send outputstatus to output device
+              eventBus.publish('outputstatus', payload);
+              break;
+            default:
+              if (debugEnabled) {
+                this.log('UNKOWN DATA RECEIVED');
+              }
+          }
+        } else if (debugEnabled) {
+          this.log(`   - incorrect answer:${payload}`);
+        }
+      });
+    });
   }
 
   // create the socket
-  async socketConnection(settings) {
-   satelSocket = new net.Socket();
-   // satelSocket.setTimeout(4000);
-   satelSocket.connect(Number(Homey.ManagerSettings.get('alarmport')), Homey.ManagerSettings.get('alarmaddr'), () => {
-    });
-     
-   
+  async socketConnection() {
+    return new Promise((resolve) => {
+      satelSocket = new net.Socket();
+      // satelSocket.setTimeout(4000);
+      satelSocket.connect(Number(Homey.ManagerSettings.get('alarmport')), Homey.ManagerSettings.get('alarmaddr'), () => {
+      });
 
-    // socket timeout
-    satelSocket.on('timeout', () => {
-      this.log('Connection timed out.');
-      SatelSocketConnectionAlive = false;
-    });
+      // socket timeout
+      satelSocket.on('timeout', () => {
+        this.log('Connection timed out.');
+        SatelSocketConnectionAlive = false;
+      });
 
-    // socket connect
-    satelSocket.on('connect', () => {
-      this.log(`Connected with alarmpanel on IP: ${Homey.ManagerSettings.get('alarmaddr')}`);
-      SatelSocketConnectionAlive = true;
-    });
+      // socket connect
+      satelSocket.on('connect', () => {
+        this.log(`Connected with alarmpanel on IP: ${Homey.ManagerSettings.get('alarmaddr')}`);
+        SatelSocketConnectionAlive = true;
+      });
 
-    // socket close
-    satelSocket.on('close', () => {
-      this.log(`Connection closed to alarmpanel on IP: ${Homey.ManagerSettings.get('alarmaddr')}`);
-      SatelSocketConnectionAlive = false;
-    });
+      // socket close
+      satelSocket.on('close', () => {
+        this.log(`Connection closed to alarmpanel on IP: ${Homey.ManagerSettings.get('alarmaddr')}`);
+        SatelSocketConnectionAlive = false;
+      });
 
-    // socket error
-    satelSocket.on('error', err => {
-      this.log(`Error:${err}`);
-      SatelSocketConnectionAlive = false;
-      satelSocket.destroy();
-    });
-
-    // socket data
-    satelSocket.on('data', data => {
-      const answer = functions.ETHM1AnswerToArray(data);
-      const payload = answer.slice(2, -4);
-      if (functions.verifyAnswer(answer)) {
-        if (debugEnabled) {
-          this.log(`   - valid answer: ${payload}`);
-        }
-        switch (payload[0]) {
-          case '7E':
-            this.parsePayloadSystemType(payload);
-            break;
-          case 'EE': // systaemstate
-            if (payload[1] == '00') {
-              // send partiotion info to partitions driver
-              eventBus.publish('partitions', payload);
-            } else if (payload[1] == '01') {
-              // send zones info to all zone drivers
-              eventBus.publish('zones', payload);
-            } else if (payload[1] == '04') {
-              // send output info to output driver
-              eventBus.publish('outputs', payload);
-            }
-            break;
-          case '0A':
-            // send partitionsstatus to partition device
-            eventBus.publish('partitionstatus', payload);
-            break;
-          case '13':
-            // send partitionsalarms to partition device
-            eventBus.publish('partitionalarm', payload);
-            break;
-          case '00':
-            // send zonestatus to all zone devices
-            eventBus.publish('zonestatus', payload);
-            break;
-          case '17':
-            // send outputstatus to output device
-            eventBus.publish('outputstatus', payload);
-            break;
-          default:
-            if (debugEnabled) {
-              this.log('UNKOWN DATA RECEIVED');
-            }
-        }
-      } else if (debugEnabled) {
-        this.log(`   - incorrect answer:${payload}`);
-      }
+      // socket error
+      satelSocket.on('error', err => {
+        this.log(`Error:${err}`);
+        SatelSocketConnectionAlive = false;
+        satelSocket.destroy();
+      });
     });
   }
 
@@ -193,24 +195,25 @@ class integraAlarm extends Homey.App {
     setTimeout(() => {
       if (alarmIdentified) {
         this.zoneRead();
-        this.outputRead();
-        this.partitionRead();
+        //this.outputRead();
+        //this.partitionRead();
       }
     }, 2000);
   }
 
   // reading of zones
   async zoneRead() {
-    this.log('Reading zones');
-    for (let totalZonesCount = 1; totalZonesCount <= totalZoneOutputPartitions[0]; totalZonesCount++) {
-      setTimeout(() => {
-        // send commands for readout zones
-        if (debugEnabled) {
-          this.log(`Reading zonenumber : ${totalZonesCount}`);
-        }
-        this.socketSend(functions.createFrameArray(['EE', '01', `${functions.dec2hex2Digit(totalZonesCount)}`]));
-      }, totalZonesCount * 1720);
-    }
+      this.log('Reading zones');
+      for (let totalZonesCount = 1; totalZonesCount <= totalZoneOutputPartitions[0]; totalZonesCount++) {
+        setTimeout(() => {
+          // send commands for readout zones
+          if (debugEnabled) {
+            this.log(`Reading zonenumber : ${totalZonesCount}`);
+          }
+          this.socketSend(functions.createFrameArray(['EE', '01', `${functions.dec2hex2Digit(totalZonesCount)}`]));
+        }, totalZonesCount * 1000);
+      }
+      this.outputRead();
   }
 
   // reading of outputs
@@ -223,8 +226,9 @@ class integraAlarm extends Homey.App {
           this.log(`Reading outputnumber : ${totalOutputCount}`);
         }
         this.socketSend(functions.createFrameArray(['EE', '04', `${functions.dec2hex2Digit(totalOutputCount)}`]));
-      }, totalOutputCount * 1155);
+      }, totalOutputCount * 1000);
     }
+    this.partitionRead();
   }
 
   // reading of partitions.
@@ -249,8 +253,8 @@ class integraAlarm extends Homey.App {
       setInterval(() => {
         if (statuspollers) {
           setTimeout(() => {
-          // send command for zone violation
-            //this.socketSend(functions.createFrameArray(['00']));
+            // send command for zone violation
+            this.socketSend(functions.createFrameArray(['00']));
           }, 1000);
         }
       }, 1000);
@@ -266,7 +270,7 @@ class integraAlarm extends Homey.App {
         if (statuspollers) {
           setTimeout(() => {
             // send command for output status
-            //this.socketSend(functions.createFrameArray(['17']));
+            this.socketSend(functions.createFrameArray(['17']));
           }, 1000);
         }
       }, 1000);
@@ -281,8 +285,8 @@ class integraAlarm extends Homey.App {
       setInterval(() => {
         if (statuspollers) {
           setTimeout(() => {
-          // send command for partition status
-            //this.socketSend(functions.createFrameArray(['0A']));
+            // send command for partition status
+            this.socketSend(functions.createFrameArray(['0A']));
           }, 1000);
         }
       }, 1000);
@@ -298,7 +302,7 @@ class integraAlarm extends Homey.App {
         if (statuspollers) {
           setTimeout(() => {
             // send command for partitionalarmss
-            //this.socketSend(functions.createFrameArray(['13']));
+            this.socketSend(functions.createFrameArray(['13']));
           }, 1000);
         }
       }, 1000);
