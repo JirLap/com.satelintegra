@@ -1,6 +1,3 @@
-/* eslint-disable eqeqeq */
-/* eslint-disable max-len */
-
 'use strict';
 
 const Homey = require('homey');

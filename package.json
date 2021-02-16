@@ -6,7 +6,7 @@
     "node": ">=12.16.1"
   },
   "devDependencies": {
-    "eslint": "^7.10.0",
+    "eslint": "^7.20.0",
     "eslint-config-athom": "^2.1.0",
     "homey": "^2.9.7"
   },
