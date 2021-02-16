@@ -202,11 +202,11 @@ class integraAlarm extends Homey.App {
             }
           }
         });
-      } 
+      }
       setTimeout(() => {
         if (alarmIdentified) {
           this.zoneRead();
-          // this.outputRead();
+          this.outputRead();
           // this.partitionRead();
         }
       }, 2000);
@@ -263,10 +263,11 @@ class integraAlarm extends Homey.App {
                 eventBus.publish('outputs', payload);
               }
             });
-          } 
+          }
         });
       }, totalOutputCount * 1000);
     }
+
   }
 
   // reading of partitions
@@ -291,7 +292,7 @@ class integraAlarm extends Homey.App {
                 eventBus.publish('partitions', payload);
               }
             });
-          } 
+          }
         });
       }, totalPartitionsCount * 1000);
     }
