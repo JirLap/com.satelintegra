@@ -200,10 +200,10 @@ class integraAlarm extends Homey.App {
           }
         });
       }
-      setTimeout(() => {
+      setTimeout(async function() {
         if (alarmIdentified) {
-          this.zoneRead();
-          this.outputRead();
+          await this.zoneRead();
+          await this.outputRead();
           // this.partitionRead();
         }
       }, 2000);
