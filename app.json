@@ -1,6 +1,6 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
-  "id": "com.satelintegra2",
+  "id": "com.satelintegra",
   "version": "2.4.1",
   "compatibility": ">=4.0.0",
   "homeyCommunityTopicId": 36654,
@@ -8,7 +8,7 @@
   "source": "https://github.com/mickelluiten/com.satelintegra",
   "sdk": 2,
   "name": {
-    "en": "Satel Integra Alarm2"
+    "en": "Satel Integra Alarm"
   },
   "dependencies": {
     "net": "*"
