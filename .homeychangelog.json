@@ -28,5 +28,8 @@
   },
   "2.3.1": {
     "en": "Timing issue panelread"
+  },
+  "2.4.1": {
+    "en": "Improvement communication to alarmpanel"
   }
 }
