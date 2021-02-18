@@ -226,7 +226,7 @@ class integraAlarm extends Homey.App {
     if (alarmIdentified) {
       await this.zoneRead();
       await this.outputRead();
-      // await this.partitionRead();
+      await this.partitionRead();
     }
   }
 
@@ -256,67 +256,63 @@ class integraAlarm extends Homey.App {
   async zoneRead() {
     if (!satelSocketConnectionAlive && !alarmIdentified) return;
     this.log(' * Reading zones');
-    const data = await new Promise((resolve, reject) => {
-      for (let totalZonesCount = 1; totalZonesCount <= totalZoneOutputPartitions[0]; totalZonesCount++) {
-        setTimeout(() => {
-          this.log(` * Reading zonenumber : ${totalZonesCount}`);
-          const input = functions.createFrameArray(['EE', '01', `${functions.dec2hex2Digit(totalZonesCount)}`]);
-          // send commands for readout zones
-          satelSocket.write(Buffer.from(input.join(''), 'hex'));
-          satelSocket.once('data', data => {
-            this.readingZonesOutputsPartitionsPayload(data);
-            resolve(data);
-          }).on('error', error => {
-            reject(error);
-            this.log(error);
-          });
-        }, totalZonesCount * 1000);
-      }
-    });
+    for (let totalZonesCount = 1; totalZonesCount <= totalZoneOutputPartitions[0]; totalZonesCount++) {
+      this.log(` * Reading zonenumber : ${totalZonesCount}`);
+      await new Promise((resolve, reject) => {
+        const input = functions.createFrameArray(['EE', '01', `${functions.dec2hex2Digit(totalZonesCount)}`]);
+        // send commands for readout zones
+        satelSocket.write(Buffer.from(input.join(''), 'hex'));
+        satelSocket.once('data', data => {
+          this.readingZonesOutputsPartitionsPayload(data);
+          resolve(data);
+        }).on('error', error => {
+          reject(error);
+        });
+      });
+      await delay(500);
+    }
   }
 
   // reading of outputs
   async outputRead() {
     if (!satelSocketConnectionAlive && !alarmIdentified) return;
     this.log(' * Reading outputs');
-    const data = await new Promise((resolve, reject) => {
-      for (let totalOutputCount = 1; totalOutputCount <= totalZoneOutputPartitions[1]; totalOutputCount++) {
-        setTimeout(() => {
-          this.log(` * Reading outputnumber : ${totalOutputCount}`);
-          const input = functions.createFrameArray(['EE', '04', `${functions.dec2hex2Digit(totalOutputCount)}`]);
-          // send commands for readout zones
-          satelSocket.write(Buffer.from(input.join(''), 'hex'));
-          satelSocket.once('data', data => {
-            this.readingZonesOutputsPartitionsPayload(data);
-            resolve(data);
-          }).on('error', error => {
-            reject(error);
-          });
-        }, totalOutputCount * 1000);
-      }
-    });
+    for (let totalOutputCount = 1; totalOutputCount <= totalZoneOutputPartitions[1]; totalOutputCount++) {
+      this.log(` * Reading outputnumber : ${totalOutputCount}`);
+      await new Promise((resolve, reject) => {
+        const input = functions.createFrameArray(['EE', '04', `${functions.dec2hex2Digit(totalOutputCount)}`]);
+        // send commands for readout zones
+        satelSocket.write(Buffer.from(input.join(''), 'hex'));
+        satelSocket.once('data', data => {
+          this.readingZonesOutputsPartitionsPayload(data);
+          resolve(data);
+        }).on('error', error => {
+          reject(error);
+        });
+      });
+      await delay(500);
+    }
   }
 
   // reading of partitions
   async partitionRead() {
     if (!satelSocketConnectionAlive && !alarmIdentified) return;
     this.log(' * Reading partitions');
-    const data = await new Promise((resolve, reject) => {
-      for (let totalPartitionsCount = 1; totalPartitionsCount <= totalZoneOutputPartitions[2]; totalPartitionsCount++) {
-        setTimeout(() => {
-          this.log(` * Reading partitionnumber : ${totalPartitionsCount}`);
-          const input = functions.createFrameArray(['EE', '00', `${functions.dec2hex2Digit(totalPartitionsCount)}`]);
-          // send commands for readout partitions
-          satelSocket.write(Buffer.from(input.join(''), 'hex'));
-          satelSocket.once('data', data => {
-            this.readingZonesOutputsPartitionsPayload(data);
-            resolve(data);
-          }).on('error', error => {
-            reject(error);
-          });
-        }, totalPartitionsCount * 1000);
-      }
-    });
+    for (let totalPartitionsCount = 1; totalPartitionsCount <= totalZoneOutputPartitions[2]; totalPartitionsCount++) {
+      this.log(` * Reading partitionnumber : ${totalPartitionsCount}`);
+      await new Promise((resolve, reject) => {
+        const input = functions.createFrameArray(['EE', '00', `${functions.dec2hex2Digit(totalPartitionsCount)}`]);
+        // send commands for readout partitions
+        satelSocket.write(Buffer.from(input.join(''), 'hex'));
+        satelSocket.once('data', data => {
+          this.readingZonesOutputsPartitionsPayload(data);
+          resolve(data);
+        }).on('error', error => {
+          reject(error);
+        });
+      });
+      await delay(500);
+    }
   }
 
   // socket poller for zonestatus
