@@ -11,7 +11,7 @@ const net = require('net');
 const eventBus = require('@tuxjs/eventbus');
 const functions = require('./js/functions');
 
-const debugEnabled = true;
+const debugEnabled = false;
 const satelSocket = new net.Socket();
 
 let satelSocketConnectionAlive = false;
