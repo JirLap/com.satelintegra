@@ -1,13 +1,24 @@
 {
   "id": "com.satelintegra",
-  "version": "2.4.3",
+  "version": "2.4.4",
   "compatibility": ">=4.0.0",
   "homeyCommunityTopicId": 36654,
+  "brandColor": "#f54242",
   "support": "mailto:mickelluiten@gmail.com",
   "source": "https://github.com/mickelluiten/com.satelintegra",
   "sdk": 2,
   "name": {
     "en": "Satel Integra Alarm"
+  },
+  "tags": {
+    "en": [
+      "Satel",
+      "Integra",
+      "Alarm",
+      "thermostat",
+      "Motion",
+      "contact"
+    ]
   },
   "dependencies": {
     "net": "*"
@@ -33,5 +44,12 @@
         "email": "mickelluiten@gmail.com"
       }
     ]
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "mickelluiten"
+      }
+    }
   }
 }
