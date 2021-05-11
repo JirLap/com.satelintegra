@@ -7,6 +7,14 @@
 
 'use strict';
 
+function delay(ms) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve();
+    }, ms);
+  });
+}
+
 function hex2a(data) {
   const hex = data.toString().replace(/,/g, '');
   let str = '';
@@ -141,5 +149,5 @@ function createFrameArray(cmd) {
 } // createFrameArray
 
 module.exports = {
-  hex2a, dec2hex4Digit, dec2hex2Digit, hex2dec, hex2bin, byteArrayToDec, stringToHexBytes, calcCRC, ETHM1AnswerToArray, partitionListToByteArray, verifyAnswer, createFrameArray, outputListToByteArray,
+  hex2a, dec2hex4Digit, dec2hex2Digit, hex2dec, hex2bin, byteArrayToDec, stringToHexBytes, calcCRC, ETHM1AnswerToArray, partitionListToByteArray, verifyAnswer, createFrameArray, outputListToByteArray, delay,
 };

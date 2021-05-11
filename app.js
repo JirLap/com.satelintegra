@@ -11,7 +11,7 @@ const net = require('net');
 const eventBus = require('@tuxjs/eventbus');
 const functions = require('./js/functions');
 
-const debugEnabled = false;
+const debugEnabled = true;
 const satelSocket = new net.Socket();
 
 let satelSocketConnectionAlive = false;
@@ -22,14 +22,6 @@ let zoneStatusEnable = false;
 let outputStatusEnable = false;
 let partitionStatusEnable = false;
 let partitionAlarmStatusEnable = false;
-
-function delay(ms) {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve();
-    }, ms);
-  });
-}
 
 class integraAlarm extends Homey.App {
 
@@ -95,8 +87,8 @@ class integraAlarm extends Homey.App {
 
   // socket poller/reconnect
   async socketConnectorPoll() {
-    setInterval(() => {
-      if (!satelSocketConnectionAlive && Homey.ManagerSettings.get('alarmaddr') != null) {
+    setInterval(async () => {
+      if (!satelSocketConnectionAlive && Homey.ManagerSettings.get('alarmaddr') != null && statuspollers) {
         this.socketConnection(Number(Homey.ManagerSettings.get('alarmport')), Homey.ManagerSettings.get('alarmaddr'));
         this.log(`Trying to connect to alarmpanel: ${Homey.ManagerSettings.get('alarmaddr')}`);
       }
@@ -107,13 +99,15 @@ class integraAlarm extends Homey.App {
   async socketConnection() {
     if (!satelSocketConnectionAlive) {
       satelSocket.setEncoding('binary');
-      satelSocket.setMaxListeners(0);
+      // satelSocket.setMaxListeners(0);
+      satelSocket.setTimeout(3000);
       satelSocket.connect(Number(Homey.ManagerSettings.get('alarmport')), Homey.ManagerSettings.get('alarmaddr'));
     }
     // socket timeout
     satelSocket.on('timeout', () => {
-      this.log('Connection timed out.');
+      this.log(`Timeout on connection to alarmpanel: ${Homey.ManagerSettings.get('alarmaddr')}`);
       satelSocketConnectionAlive = false;
+      satelSocket.destroy();
     });
 
     // socket connect
@@ -126,6 +120,7 @@ class integraAlarm extends Homey.App {
     satelSocket.on('close', () => {
       this.log(`Connection closed to alarmpanel on IP: ${Homey.ManagerSettings.get('alarmaddr')}`);
       satelSocketConnectionAlive = false;
+      satelSocket.destroy();
     });
 
     // socket error
@@ -221,12 +216,13 @@ class integraAlarm extends Homey.App {
       }
     }
 
-    await delay(2000);
+    await functions.delay(2000);
 
     if (alarmIdentified) {
       await this.zoneRead();
       await this.outputRead();
       await this.partitionRead();
+      satelSocket.destroy();
     }
   }
 
@@ -271,7 +267,7 @@ class integraAlarm extends Homey.App {
           reject(error);
         });
       });
-      await delay(100);
+      await functions.delay(100);
     }
   }
 
@@ -293,7 +289,7 @@ class integraAlarm extends Homey.App {
           reject(error);
         });
       });
-      await delay(100);
+      await functions.delay(100);
     }
   }
 
@@ -315,7 +311,7 @@ class integraAlarm extends Homey.App {
           reject(error);
         });
       });
-      await delay(100);
+      await functions.delay(100);
     }
   }
 
