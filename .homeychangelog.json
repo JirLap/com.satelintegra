@@ -40,5 +40,8 @@
   },
   "2.4.4": {
     "en": "insert tags,brandcolor and donate to app.json "
+  },
+  "2.5.5": {
+    "en": "Connection issues resolved"
   }
 }
