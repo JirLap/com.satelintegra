@@ -102,6 +102,7 @@ class integraAlarm extends Homey.App {
       // satelSocket.setMaxListeners(0);
       satelSocket.setTimeout(3000);
       satelSocket.connect(Number(Homey.ManagerSettings.get('alarmport')), Homey.ManagerSettings.get('alarmaddr'));
+      this.log(`Send connect to alarmpanel: ${Homey.ManagerSettings.get('alarmaddr')}`);
     }
     // socket timeout
     satelSocket.on('timeout', () => {
