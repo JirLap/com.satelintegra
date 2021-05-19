@@ -8,8 +8,9 @@ const eventBus = require('@tuxjs/eventbus');
 const functions = require('../../js/functions');
 
 let zonesActiveOnHomey = [];
+let eventBusEnable = false;
 
-class Device extends Homey.Device {
+class ZoneContactDevice extends Homey.Device {
 
   /**
    * onInit is called when the device is initialized.
@@ -23,9 +24,12 @@ class Device extends Homey.Device {
     eventBus.publish('zonestatuspolltrue', true);
 
     // incoming zonestatus
-    eventBus.subcribe('zonestatus', payload => {
-      this.zoneStatus(payload);
-    });
+    if (!eventBusEnable) {
+      eventBus.subcribe('zonestatus', payload => {
+        this.zoneStatus(payload);
+      });
+      eventBusEnable = true;
+    }
   }
 
   getDeviceId() {
@@ -78,4 +82,4 @@ class Device extends Homey.Device {
 
 }
 
-module.exports = Device;
+module.exports = ZoneContactDevice;

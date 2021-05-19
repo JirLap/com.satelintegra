@@ -8,8 +8,9 @@ const eventBus = require('@tuxjs/eventbus');
 const functions = require('../../js/functions');
 
 let partitionsActiveOnHomey = [];
+let eventBusEnable = false;
 
-class Device extends Homey.Device {
+class PartitionDevice extends Homey.Device {
 
   /**
    * onInit is called when the device is initialized.
@@ -23,14 +24,20 @@ class Device extends Homey.Device {
     eventBus.publish('partitionstatuspolltrue', true);
 
     // incoming partitionstatus
-    eventBus.subcribe('partitionstatus', payload => {
-      this.partitionStatus(payload);
-    });
+    if (!eventBusEnable) {
+      eventBus.subcribe('partitionstatus', payload => {
+        this.partitionStatus(payload);
+      });
+      eventBusEnable = true;
+    }
 
     // incoming partitionsalarm
-    eventBus.subcribe('partitionalarm', payload => {
-      this.partitionAlarms(payload);
-    });
+    if (!eventBusEnable) {
+      eventBus.subcribe('partitionalarm', payload => {
+        this.partitionAlarms(payload);
+      });
+      eventBusEnable = true;
+    }
 
     this.registerCapabilityListener('onoff', this.onCapabilityOnoff.bind(this));
   }
@@ -129,4 +136,4 @@ class Device extends Homey.Device {
 
 }
 
-module.exports = Device;
+module.exports = PartitionDevice;

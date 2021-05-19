@@ -8,8 +8,9 @@ const eventBus = require('@tuxjs/eventbus');
 const functions = require('../../js/functions');
 
 let OutputsActiveOnHomey = [];
+let eventBusEnable = false;
 
-class Device extends Homey.Device {
+class OutputDevice extends Homey.Device {
 
   /**
    * onInit is called when the device is initialized.
@@ -23,9 +24,12 @@ class Device extends Homey.Device {
     eventBus.publish('outputstatuspolltrue', true);
 
     // incoming outputstatus
-    eventBus.subcribe('outputstatus', payload => {
-      this.outputStatus(payload);
-    });
+    if (!eventBusEnable) {
+      eventBus.subcribe('outputstatus', payload => {
+        this.outputStatus(payload);
+      });
+      eventBusEnable = true;
+    }
 
     this.registerCapabilityListener('onoff', this.onCapabilityOnoff.bind(this));
   }
@@ -107,4 +111,4 @@ class Device extends Homey.Device {
 
 }
 
-module.exports = Device;
+module.exports = OutputDevice;
