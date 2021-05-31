@@ -28,7 +28,6 @@ class PartitionDevice extends Homey.Device {
       eventBus.subcribe('partitionstatus', payload => {
         this.partitionStatus(payload);
       });
-      eventBusEnable = true;
     }
 
     // incoming partitionsalarm
