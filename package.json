@@ -6,17 +6,18 @@
     "node": ">=12.16.1"
   },
   "devDependencies": {
-    "eslint": "^7.25.0",
-    "eslint-config-athom": "^2.1.0",
-    "homey": "^2.18.0"
+    "eslint": "^7.31.0",
+    "eslint-config-athom": "^2.1.1",
+    "homey": "^2.20.6"
   },
   "dependencies": {
     "@tuxjs/eventbus": "^1.0.3",
     "hosted-git-info": "^4.0.2",
     "lodash": "^4.17.21",
     "net": "^1.0.2",
-    "ws": "^7.4.6",
-    "xmlhttprequest-ssl": "^1.6.2",
+    "path-parse": "^1.0.7",
+    "ws": "^7.5.3",
+    "xmlhttprequest-ssl": "^1.6.3",
     "y18n": "^5.0.8"
   }
 }
