@@ -52,5 +52,8 @@
   },
   "2.6.0": {
     "en": "Improvement in setCabability"
+  },
+  "2.6.1": {
+    "en": "Bug in device-init fire-zone"
   }
 }
