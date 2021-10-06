@@ -20,7 +20,7 @@ class ZoneFireDevice extends Homey.Device {
 
     // make array by deviceID on wich devices are initialized and are uses
     zonesActiveOnHomey.push(this.getDeviceId());
-    const driver = Homey.ManagerDrivers.getDriver('alarm_fire');
+    const driver = Homey.ManagerDrivers.getDriver('zonesfire');
     const deviceNameId = driver.getDevice({ id: this.getDeviceId().toString() });
     deviceNameId.setCapabilityValue('alarm_fire', false);
 
