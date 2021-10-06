@@ -7,6 +7,9 @@
   "capabilities": [
     "onoff"
   ],
+  "connectivity": [ 
+    "lan"
+  ],
   "images": {
     "large": "/drivers/outputs/assets/images/large.png",
     "small": "/drivers/outputs/assets/images/small.png"

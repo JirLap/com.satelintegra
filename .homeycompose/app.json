@@ -1,9 +1,12 @@
 {
   "id": "com.satelintegra",
-  "version": "2.5.7",
+  "version": "2.6.0",
   "compatibility": ">=4.0.0",
   "homeyCommunityTopicId": 36654,
   "brandColor": "#f54242",
+  "platforms": [
+    "local"
+  ],
   "support": "mailto:mickelluiten@gmail.com",
   "source": "https://github.com/mickelluiten/com.satelintegra",
   "sdk": 2,

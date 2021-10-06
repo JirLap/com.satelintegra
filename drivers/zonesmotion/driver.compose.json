@@ -7,6 +7,9 @@
   "capabilities": [
     "alarm_motion"
   ],
+  "connectivity": [ 
+    "lan"
+  ],
   "images": {
     "large": "/drivers/zonesmotion/assets/images/large.png",
     "small": "/drivers/zonesmotion/assets/images/small.png"

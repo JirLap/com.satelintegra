@@ -20,6 +20,9 @@ class ZoneFireDevice extends Homey.Device {
 
     // make array by deviceID on wich devices are initialized and are uses
     zonesActiveOnHomey.push(this.getDeviceId());
+    const driver = Homey.ManagerDrivers.getDriver('alarm_fire');
+    const deviceNameId = driver.getDevice({ id: this.getDeviceId().toString() });
+    deviceNameId.setCapabilityValue('alarm_fire', false);
 
     eventBus.publish('zonestatuspolltrue', true);
 
@@ -49,12 +52,20 @@ class ZoneFireDevice extends Homey.Device {
           continue;
         }
         if (binarray[i] == 1) {
-          this.log(`Active Zone:  ${zoneId}`);
+          const deviceStatusPanel = [[zoneId], 'true'];
           const deviceNameId = driver.getDevice({ id: zoneId.toString() });
-          deviceNameId.setCapabilityValue('alarm_fire', true);
+          const deviceStatusHomey = deviceNameId.getCapabilityValue('alarm_fire');
+          if (deviceStatusHomey.toString() != deviceStatusPanel[1].toString()) {
+            deviceNameId.setCapabilityValue('alarm_fire', true);
+            this.log(`Active Zone:  ${zoneId}`);
+          }
         } else {
+          const deviceStatusPanel = [[zoneId], 'false'];
           const deviceNameId = driver.getDevice({ id: zoneId.toString() });
-          deviceNameId.setCapabilityValue('alarm_fire', false);
+          const deviceStatusHomey = deviceNameId.getCapabilityValue('alarm_fire');
+          if (deviceStatusHomey.toString() != deviceStatusPanel[1].toString()) {
+            deviceNameId.setCapabilityValue('alarm_fire', false);
+          }
         }
       }
     }

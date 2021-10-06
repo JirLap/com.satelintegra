@@ -20,6 +20,9 @@ class OutputDevice extends Homey.Device {
 
     // make array by deviceID on wich devices are initialized and are used
     OutputsActiveOnHomey.push(this.getDeviceId());
+    const driver = Homey.ManagerDrivers.getDriver('outputs');
+    const deviceNameId = driver.getDevice({ id: this.getDeviceId().toString() });
+    deviceNameId.setCapabilityValue('onoff', false);
 
     eventBus.publish('outputstatuspolltrue', true);
 
@@ -71,12 +74,20 @@ class OutputDevice extends Homey.Device {
           continue;
         }
         if (binarray[i] == 1) {
-          this.log(`Active output:  ${outputId}`);
+          const deviceStatusPanel = [[outputId], 'true'];
           const deviceNameId = driver.getDevice({ id: outputId.toString() });
-          deviceNameId.setCapabilityValue('onoff', true);
+          const deviceStatusHomey = deviceNameId.getCapabilityValue('onoff');
+          if (deviceStatusHomey.toString() != deviceStatusPanel[1].toString()) {
+            deviceNameId.setCapabilityValue('onoff', true);
+            this.log(`Active Output:  ${outputId}`);
+          }
         } else {
+          const deviceStatusPanel = [[outputId], 'false'];
           const deviceNameId = driver.getDevice({ id: outputId.toString() });
-          deviceNameId.setCapabilityValue('onoff', false);
+          const deviceStatusHomey = deviceNameId.getCapabilityValue('onoff');
+          if (deviceStatusHomey.toString() != deviceStatusPanel[1].toString()) {
+            deviceNameId.setCapabilityValue('onoff', false);
+          }
         }
       }
     }

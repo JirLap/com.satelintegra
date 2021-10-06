@@ -7,6 +7,9 @@
   "capabilities": [
     "alarm_contact"
   ],
+  "connectivity": [ 
+    "lan"
+  ],
   "images": {
     "large": "/drivers/zonescontact/assets/images/large.png",
     "small": "/drivers/zonescontact/assets/images/small.png"

@@ -20,6 +20,9 @@ class PartitionDevice extends Homey.Device {
 
     // make array by deviceID on wich devices are initialized and are uses
     partitionsActiveOnHomey.push(this.getDeviceId());
+    const driver = Homey.ManagerDrivers.getDriver('partitions');
+    const deviceNameId = driver.getDevice({ id: this.getDeviceId().toString() });
+    deviceNameId.setCapabilityValue('onoff', false);
 
     eventBus.publish('partitionstatuspolltrue', true);
 
@@ -78,13 +81,20 @@ class PartitionDevice extends Homey.Device {
           continue;
         }
         if (binarray[i] == 1) {
-          this.log(`Active partition:  ${partId}`);
+          const deviceStatusPanel = [[partId], 'true'];
           const deviceNameId = driver.getDevice({ id: partId.toString() });
-          deviceNameId.setCapabilityValue('onoff', true);
-          // this.triggerGotArmed.trigger().then().catch();
+          const deviceStatusHomey = deviceNameId.getCapabilityValue('onoff');
+          if (deviceStatusHomey.toString() != deviceStatusPanel[1].toString()) {
+            deviceNameId.setCapabilityValue('onoff', true);
+            this.log(`Active Partition:  ${partId}`);
+          }
         } else {
+          const deviceStatusPanel = [[partId], 'false'];
           const deviceNameId = driver.getDevice({ id: partId.toString() });
-          deviceNameId.setCapabilityValue('onoff', false);
+          const deviceStatusHomey = deviceNameId.getCapabilityValue('onoff');
+          if (deviceStatusHomey.toString() != deviceStatusPanel[1].toString()) {
+            deviceNameId.setCapabilityValue('onoff', false);
+          }
         }
       }
     }

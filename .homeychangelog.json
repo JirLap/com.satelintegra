@@ -49,5 +49,8 @@
   },
   "2.5.7": {
     "en": "Partitionalarm bug fixed"
+  },
+  "2.6.0": {
+    "en": "Improvement in setCabability"
   }
 }

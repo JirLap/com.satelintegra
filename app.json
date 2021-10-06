@@ -1,10 +1,13 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.satelintegra",
-  "version": "2.5.7",
+  "version": "2.6.0",
   "compatibility": ">=4.0.0",
   "homeyCommunityTopicId": 36654,
   "brandColor": "#f54242",
+  "platforms": [
+    "local"
+  ],
   "support": "mailto:mickelluiten@gmail.com",
   "source": "https://github.com/mickelluiten/com.satelintegra",
   "sdk": 2,
@@ -63,6 +66,9 @@
       "capabilities": [
         "onoff"
       ],
+      "connectivity": [
+        "lan"
+      ],
       "images": {
         "large": "/drivers/outputs/assets/images/large.png",
         "small": "/drivers/outputs/assets/images/small.png"
@@ -92,6 +98,9 @@
         "onoff",
         "alarm_generic"
       ],
+      "connectivity": [
+        "lan"
+      ],
       "images": {
         "large": "/drivers/partitions/assets/images/large.png",
         "small": "/drivers/partitions/assets/images/small.png"
@@ -119,6 +128,9 @@
       "class": "sensor",
       "capabilities": [
         "alarm_contact"
+      ],
+      "connectivity": [
+        "lan"
       ],
       "images": {
         "large": "/drivers/zonescontact/assets/images/large.png",
@@ -148,6 +160,9 @@
       "capabilities": [
         "alarm_fire"
       ],
+      "connectivity": [
+        "lan"
+      ],
       "images": {
         "large": "/drivers/zonesfire/assets/images/large.png",
         "small": "/drivers/zonesfire/assets/images/small.png"
@@ -175,6 +190,9 @@
       "class": "sensor",
       "capabilities": [
         "alarm_motion"
+      ],
+      "connectivity": [
+        "lan"
       ],
       "images": {
         "large": "/drivers/zonesmotion/assets/images/large.png",

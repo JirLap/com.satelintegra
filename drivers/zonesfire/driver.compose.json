@@ -7,6 +7,9 @@
   "capabilities": [
     "alarm_fire"
   ],
+  "connectivity": [ 
+    "lan"
+  ],
   "images": {
     "large": "/drivers/zonesfire/assets/images/large.png",
     "small": "/drivers/zonesfire/assets/images/small.png"
