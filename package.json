@@ -12,13 +12,6 @@
   },
   "dependencies": {
     "@tuxjs/eventbus": "^1.0.3",
-    "hosted-git-info": "^4.0.2",
-    "lodash": "^4.17.21",
-    "net": "^1.0.2",
-    "object-path": "^0.11.7",
-    "path-parse": "^1.0.7",
-    "ws": "^7.5.5",
-    "xmlhttprequest-ssl": "^1.6.3",
-    "y18n": "^5.0.8"
+    "net": "^1.0.2"
   }
 }

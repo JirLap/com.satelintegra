@@ -3,8 +3,14 @@
 /* eslint-disable no-shadow */
 /* eslint-disable eqeqeq */
 /* eslint-disable no-unused-vars */
+/* eslint-disable global-require */
+/* eslint-disable node/no-unsupported-features/node-builtins */
 
 'use strict';
+
+if (process.env.DEBUG === '1') {
+  require('inspector').open(9222, '0.0.0.0', true);
+}
 
 const Homey = require('homey');
 const net = require('net');
