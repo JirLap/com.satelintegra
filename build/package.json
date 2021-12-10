@@ -1,0 +1,17 @@
+{
+  "name": "com.satelintegra",
+  "version": "0.0.1",
+  "main": "app.js",
+  "engines": {
+    "node": ">=12.16.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-athom": "^2.1.1",
+    "homey": "^2.22.2"
+  },
+  "dependencies": {
+    "@tuxjs/eventbus": "^1.0.3",
+    "net": "^1.0.2"
+  }
+}

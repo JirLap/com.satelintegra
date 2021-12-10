@@ -1,0 +1,217 @@
+{
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+  "id": "com.satelintegra",
+  "version": "2.6.1",
+  "compatibility": ">=4.0.0",
+  "homeyCommunityTopicId": 36654,
+  "brandColor": "#f54242",
+  "platforms": [
+    "local"
+  ],
+  "support": "mailto:mickelluiten@gmail.com",
+  "source": "https://github.com/mickelluiten/com.satelintegra",
+  "sdk": 2,
+  "name": {
+    "en": "Satel Integra Alarm"
+  },
+  "tags": {
+    "en": [
+      "Satel",
+      "Integra",
+      "Alarm",
+      "thermostat",
+      "Motion",
+      "contact"
+    ]
+  },
+  "dependencies": {
+    "net": "*"
+  },
+  "description": {
+    "en": "Adds interaction with Satel Integra alarmsystems."
+  },
+  "category": [
+    "security"
+  ],
+  "images": {
+    "large": "/assets/images/large.png",
+    "small": "/assets/images/small.png"
+  },
+  "author": {
+    "name": "Mickel Luiten",
+    "email": "mickelluiten@gmail.com"
+  },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Mickel Luiten",
+        "email": "mickelluiten@gmail.com"
+      }
+    ]
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "mickelluiten"
+      }
+    }
+  },
+  "drivers": [
+    {
+      "id": "outputs",
+      "name": {
+        "en": "Outputs"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "onoff"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "images": {
+        "large": "/drivers/outputs/assets/images/large.png",
+        "small": "/drivers/outputs/assets/images/small.png"
+      },
+      "icon": "/drivers/outputs/assets/icon.svg",
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_my_devices"
+          }
+        },
+        {
+          "id": "add_my_devices",
+          "template": "add_devices"
+        }
+      ]
+    },
+    {
+      "id": "partitions",
+      "name": {
+        "en": "Partitions"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "onoff",
+        "alarm_generic"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "images": {
+        "large": "/drivers/partitions/assets/images/large.png",
+        "small": "/drivers/partitions/assets/images/small.png"
+      },
+      "icon": "/drivers/partitions/assets/icon.svg",
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_my_devices"
+          }
+        },
+        {
+          "id": "add_my_devices",
+          "template": "add_devices"
+        }
+      ]
+    },
+    {
+      "id": "zonescontact",
+      "name": {
+        "en": "Zones Contact"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "alarm_contact"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "images": {
+        "large": "/drivers/zonescontact/assets/images/large.png",
+        "small": "/drivers/zonescontact/assets/images/small.png"
+      },
+      "icon": "/drivers/zonescontact/assets/icon.svg",
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_my_devices"
+          }
+        },
+        {
+          "id": "add_my_devices",
+          "template": "add_devices"
+        }
+      ]
+    },
+    {
+      "id": "zonesfire",
+      "name": {
+        "en": "Zones Fire"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "alarm_fire"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "images": {
+        "large": "/drivers/zonesfire/assets/images/large.png",
+        "small": "/drivers/zonesfire/assets/images/small.png"
+      },
+      "icon": "/drivers/zonesfire/assets/icon.svg",
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_my_devices"
+          }
+        },
+        {
+          "id": "add_my_devices",
+          "template": "add_devices"
+        }
+      ]
+    },
+    {
+      "id": "zonesmotion",
+      "name": {
+        "en": "Zones Motion"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "alarm_motion"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "images": {
+        "large": "/drivers/zonesmotion/assets/images/large.png",
+        "small": "/drivers/zonesmotion/assets/images/small.png"
+      },
+      "icon": "/drivers/zonesmotion/assets/icon.svg",
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_my_devices"
+          }
+        },
+        {
+          "id": "add_my_devices",
+          "template": "add_devices"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,191 @@
+<!doctype html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <!-- The '/homey.js' script must be included in your settings view to work -->
+    <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+</head>
+
+<body>
+    <h1 Satel Integra Settings></h1>
+   
+    <fieldset>
+        <p>Ipaddress of the ETHM module. (e.g. : 192.168.1.5)</p>
+        <table>
+            <div class="field row">
+                <tr>
+                    <th style="width:170px"><label for="alarmaddr">IP Address</label></th>
+                    <td rowspan="2"><input id="alarmaddr" type="text" placeholder="192.168.1.10" required /></td>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+            </div>
+        </table>
+    </fieldset>
+
+    <fieldset>
+        <p>Port number 1-65535. Default port is 7094.</p>
+        <table>
+            <div class="field row">
+                <tr>
+                    <th style="width:170px;"><label for="alarmport">Port</label></th>
+                    <td rowspan="2"><input id="alarmport" type="text"  placeholder="7094" required /></td>
+                </tr>
+            </div>
+        </table>
+    </fieldset>
+
+    <fieldset>
+        <p>User code for arming / disarming the system</p>
+        <table>
+            <div class="field row">
+                <tr>
+                    <th style="width:170px;"><label for="alarmcode">Usercode</label></th>
+                    <td rowspan="2"><input id="alarmcode" type="password"  placeholder="0000" required />
+                    </td>
+                </tr>
+            </div>
+        </table>
+    </fieldset>
+
+    <fieldset>
+        <table>
+            <div class="field row">
+                <tr>
+                    <button id="systemstate" class="left">Read alarmpanel</button>
+                    <button id="save" class="right">Save changes</button>
+                </tr>
+            </div>
+        </table>
+    </fieldset>
+
+    <fieldset>
+        <table>
+            <div class="field row">
+                <tr>
+                    <th style="width:170px;"><label for="alarmtype">Alarmtype</label></th>
+                    <td rowspan="2"><input id="alarmtype" type="text" /></td>
+                </tr>
+            </div>
+        </table>
+    </fieldset>
+
+    <div id="Progress">
+        <div id="Bar">0%</div>
+    </div>
+
+
+
+    <script type="text/javascript">
+
+        var i = 0;
+        function progressBar(timer) {
+            if (i == 0) {
+                i = 1;
+                var elem = document.getElementById("Bar");
+                var width = 10;
+                var id = setInterval(frame, timer);
+                function frame() {
+                    if (width >= 100) {
+                        clearInterval(id);
+                        i = 0;
+                        systemReadingStateReady()
+                    } else {
+                        width++;
+                        elem.style.width = width + "%";
+                        elem.innerHTML = width + "%";
+                    }
+                }
+            }
+        }
+
+        function systemReadingStateReady() {
+            document.getElementById('systemstate').innerHTML = "Read alarmpanel";
+            Homey.alert('Partitions, Zones &  Outputs are read.\nAdd your devices.');
+            Homey.set('systemstate', false);
+        }
+
+        // a method named 'onHomeyReady' must be present in your code
+        function onHomeyReady(Homey) {
+
+            Homey.get('alarmaddr', function (err, alarmaddr) {
+                if (err) return Homey.alert(err);
+                alarmaddrSetElement.value = alarmaddr;
+            });
+
+            Homey.get('alarmport', function (err, alarmport) {
+                if (err) return Homey.alert(err);
+                alarmportSetElement.value = alarmport;
+            });
+
+            Homey.get('alarmcode', function (err, alarmcode) {
+                if (err) return Homey.alert(err);
+                alarmcodeSetElement.value = alarmcode;
+            });
+
+            Homey.get('alarmtype', function (err, alarmtype) {
+                if (err) return Homey.alert(err);
+                alarmtypeSetElement.value = alarmtype;
+            });
+
+            // Tell Homey we're ready to be displayed
+            Homey.set('systemstate', false);
+            Homey.ready();
+
+            var alarmaddrSetElement = document.getElementById('alarmaddr');
+            var alarmportSetElement = document.getElementById('alarmport');
+            var alarmcodeSetElement = document.getElementById('alarmcode');
+            var alarmtypeSetElement = document.getElementById('alarmtype');
+            var saveElement = document.getElementById('save');
+
+            saveElement.addEventListener('click', function (e) {
+
+                
+                // create Regular Expression that validates for IPv4 addresses, then do the actual test on the input.
+                var Ipv4RegEx = new RegExp('^(([01]?\\d\\d?|2[0-4]\\d|25[0-5]).){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$');
+                var IPInputOK = Ipv4RegEx.test(alarmaddrSetElement.value);
+                if (IPInputOK) {
+                    Homey.set('alarmaddr', alarmaddrSetElement.value);
+                } else {
+                    Homey.alert('No (valid) IP address');
+                }
+
+                if (Number(alarmportSetElement.value) >= 1 && Number(alarmportSetElement.value) <= 65535) {
+                    Homey.set('alarmport', alarmportSetElement.value);
+                } else {
+                    Homey.alert('Portsetting is out of range');
+                }
+
+                if (Number(alarmcodeSetElement.value) >= 0 && Number(alarmcodeSetElement.value) <= 999999) {
+                    Homey.set('alarmcode', alarmcodeSetElement.value);
+                } else {
+                    Homey.alert('Not a valid usercode');
+                }
+
+                document.getElementById('save').innerHTML = "Settings saved";
+
+            });
+            var systemstateElement = document.getElementById('systemstate');
+
+            systemstateElement.addEventListener('click', function (e) {
+                document.getElementById('systemstate').innerHTML = "Reading...";
+                Homey.set('systemstate', true);
+                setTimeout(() => {
+                Homey.get('alarmtype', function (err, alarmtype) {
+                    if (err) return Homey.alert(err);
+                    alarmtypeSetElement.value = alarmtype;
+                    Homey.get('alarmtypetotal', function (err, alarmtypetotal) {
+                    if (err) return Homey.alert(err);
+                        progressBar(Number(alarmtypetotal) * 10, );
+                    });
+                });
+            }, 2000);
+            });
+
+        }
+    </script>
+</body>
+
+</html>
